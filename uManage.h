@@ -13,7 +13,7 @@ struct window_state {
 
 void   handle_break (int signal);
 void   window_state_init (struct window_state *);
-time_t window_state_report (struct window_state *, unsigned char *);
+time_t window_state_report (struct window_state *);
 char * window_state_format (struct window_state *, time_t *, time_t *);
 int    is_window_updated (xdo_t *, struct window_state *);
 

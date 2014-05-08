@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <getopt.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -127,7 +128,7 @@ int is_window_updated (xdo_t *xdo, struct window_state *ws) {
     xdo_get_focused_window_sane(xdo, &win);
     xdo_get_window_name(xdo, win, &name, &n_len, &n_type);
     if(strcmp((char *)name, (char *)ws->window_title) || ws->force) {
-        now = window_state_report(ws, name);
+        now = window_state_report(ws);
         ws->window_start = now;
         ws->window_id = win;
         strcpy((char *)ws->window_title, (char *)name);
@@ -139,7 +140,7 @@ int is_window_updated (xdo_t *xdo, struct window_state *ws) {
     return 0;
 }
 
-time_t window_state_report (struct window_state *ws, unsigned char *title) {
+time_t window_state_report (struct window_state *ws) {
     time_t  window_end,
             window_dur;
 
@@ -151,12 +152,14 @@ time_t window_state_report (struct window_state *ws, unsigned char *title) {
 }
 
 char * window_state_format (struct window_state *ws, time_t *instead, time_t *duration) {
-    time_t *time = instead;
+    time_t     *time = instead;
+    struct tm  *t = NULL;
+
     if (time == NULL) {
         time = &ws->window_start;
     }
 
-    struct tm *t = localtime(time);
+    t = localtime(time);
     sprintf(ws->csv, "%04d,%02d,%02d,%02d,%02d,%02d,%08X,%s,%u,%u",
             t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
             t->tm_hour, t->tm_min, t->tm_sec,
