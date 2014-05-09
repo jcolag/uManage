@@ -96,6 +96,7 @@ int main (int argc, char *argv[]) {
                 current.idle_start -= (idle + 500) / 1000;
             }
             else if(current.idle_start != 0) {
+                /* If we're tracking idle time and it grows, add it */
                 time(&idle_dur);
                 idle_dur -= current.idle_start;
                 current.idle_accumulated += idle_dur;
@@ -104,12 +105,15 @@ int main (int argc, char *argv[]) {
         }
 
         if(is_window_updated(xdo_instance, &current)) {
+            /* Flush in case someone monitors the output file */
             fprintf(report, "%s\n", current.csv);
+            fflush(report);
         }
+        /* Reset this, so that we don't have problems exiting */
         current.force = 0;
 
-        fflush(report);
         if(poll_period < 1) {
+            /* I might want to use this for one-off scripts */
             break;
         }
 
@@ -144,6 +148,19 @@ void window_state_init (struct window_state *ws) {
 }
 
 int is_window_updated (xdo_t *xdo, struct window_state *ws) {
+    /*
+     *  Grab the focused window's ID and title
+     *  If it's a new title, better to keep track of file saves than not,
+     *          likewise with browser tabs, which is why we don't test
+     *          the window ID
+     *      Generate the CSV
+     *      Reset the window state
+     *  Notify upstream whether anything useful is going on
+     *
+     *  Note that the XDO documentation appears to be out of date.  It
+     *  doesn't list xdo_get_focused_window_sane(), but does have a
+     *  xdo_window_get_focus(), which doesn't actually exist.
+     */
     Window          win;
     unsigned char  *name;
     int             n_len,
@@ -169,6 +186,10 @@ int is_window_updated (xdo_t *xdo, struct window_state *ws) {
 }
 
 time_t window_state_report (struct window_state *ws) {
+    /*
+     *  Get the duration the most recent window has been used and
+     *  retrieve the relevant CSV.
+     */
     time_t  window_end,
             window_dur;
 
@@ -180,6 +201,12 @@ time_t window_state_report (struct window_state *ws) {
 }
 
 char * window_state_format (struct window_state *ws, time_t *instead, time_t *duration) {
+    /*
+     *  Create the CSV line inside the window state, ready for printing.
+     *
+     *  If the caller set the instead parameter, use it instead of the
+     *  state's duration.
+     */
     time_t     *time = instead;
     struct tm  *t = NULL;
 
@@ -196,8 +223,10 @@ char * window_state_format (struct window_state *ws, time_t *instead, time_t *du
     return ws->csv;
 }
 
-unsigned long idle_time(xcb_connection_t *conn, xcb_screensaver_query_info_cookie_t c)
-{
+unsigned long idle_time(xcb_connection_t *conn, xcb_screensaver_query_info_cookie_t c) {
+    /*
+     *  Grab the current idle time, expressed in milliseconds.
+     */
     xcb_screensaver_query_info_reply_t *info =
             xcb_screensaver_query_info_reply(conn, c, NULL);
     uint32_t idle = info->ms_since_user_input;
