@@ -7,6 +7,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <xdo.h>
+#include <xcb/screensaver.h>
 #include "uManage.h"
 
 int                 poll_continue = 1;
@@ -16,10 +17,15 @@ struct window_state current;
 
 int main (int argc, char *argv[]) {
     int                 chOpt,              /* For getopt() */
-                        pollPeriod = 1,
-                        idleThreshold = 180;/* Treat time as idle at (s) */
-    char               *filename;           /* Target file for *report */
+                        poll_period = 1,
+                        idle_threshold = 180;/* Treat time as idle at (s) */
+    char               *filename = "";      /* Target file for *report */
+    unsigned long       idle;               /* Idle time in ms */
+    time_t              idle_dur;
 
+    xcb_connection_t   *connection = xcb_connect(NULL, NULL);
+    xcb_screensaver_query_info_cookie_t cookie;
+    xcb_screen_t       *screen;
 
     /*
      * Program setup
@@ -38,10 +44,10 @@ int main (int argc, char *argv[]) {
                 filename = optarg;
                 break;
             case 'd':
-                pollPeriod = atoi(optarg);
+                poll_period = atoi(optarg);
                 break;
             case 'i':
-                idleThreshold = atoi(optarg);
+                idle_threshold = atoi(optarg);
                 break;
             case '?':
                 if(optopt == 'f' || optopt == 'd' || optopt == 'i')
@@ -67,6 +73,7 @@ int main (int argc, char *argv[]) {
 
     window_state_init(&current);
     xdo_instance = xdo_new(NULL);
+    screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
     /*
      * Main loop
@@ -77,6 +84,24 @@ int main (int argc, char *argv[]) {
      *     Set for next iteration
      */
     while(poll_continue || current.force) {
+        cookie = xcb_screensaver_query_info(connection, screen->root);
+        idle = idle_time(connection, cookie);
+
+        if(idle < current.last_idle) {
+            /* New idle "session" */
+            if(idle > idle_threshold * (unsigned long)1000) {
+                /* It has been long enough, so reset the idle timer */
+                /* ...but round up. */
+                time(&current.idle_start);
+                current.idle_start -= (idle + 500) / 1000;
+            }
+            else if(current.idle_start != 0) {
+                time(&idle_dur);
+                idle_dur -= current.idle_start;
+                current.idle_accumulated += idle_dur;
+                current.idle_start = 0;
+            }
+        }
 
         if(is_window_updated(xdo_instance, &current)) {
             fprintf(report, "%s\n", current.csv);
@@ -84,11 +109,11 @@ int main (int argc, char *argv[]) {
         current.force = 0;
 
         fflush(report);
-        if(pollPeriod < 1) {
+        if(poll_period < 1) {
             break;
         }
 
-        sleep(pollPeriod);
+        sleep(poll_period);
     }
 
     /*
@@ -132,6 +157,9 @@ int is_window_updated (xdo_t *xdo, struct window_state *ws) {
         ws->window_start = now;
         ws->window_id = win;
         strcpy((char *)ws->window_title, (char *)name);
+        ws->idle_accumulated = 0;
+        ws->idle_start = 0;
+        ws->last_idle = (unsigned long)(-1);
         if (ws->force) {
             poll_continue = 0;
         }
@@ -166,5 +194,14 @@ char * window_state_format (struct window_state *ws, time_t *instead, time_t *du
             (unsigned)ws->window_id, ws->window_title,
             (unsigned)*duration, (unsigned)ws->idle_accumulated);
     return ws->csv;
+}
+
+unsigned long idle_time(xcb_connection_t *conn, xcb_screensaver_query_info_cookie_t c)
+{
+    xcb_screensaver_query_info_reply_t *info =
+            xcb_screensaver_query_info_reply(conn, c, NULL);
+    uint32_t idle = info->ms_since_user_input;
+    free(info);
+    return idle;
 }
 
