@@ -16,16 +16,14 @@ xdo_t              *xdo_instance;
 struct window_state current;
 
 int main (int argc, char *argv[]) {
-    int                 chOpt,              /* For getopt() */
-                        poll_period = 1,
-                        idle_threshold = 180;/* Treat time as idle at (s) */
-    char               *filename = "";      /* Target file for *report */
     unsigned long       idle;               /* Idle time in ms */
     time_t              idle_dur;
 
     xcb_connection_t   *connection = xcb_connect(NULL, NULL);
     xcb_screensaver_query_info_cookie_t cookie;
     xcb_screen_t       *screen;
+
+    struct program_options opts;
 
     /*
      * Program setup
@@ -34,39 +32,13 @@ int main (int argc, char *argv[]) {
      *     Open report file for logging
      *     Initialize variables
      */
-
     signal(SIGINT, handle_break);
 
-    opterr = 0;
-    while((chOpt = getopt(argc, argv, "d:f:i:")) != -1) {
-        switch(chOpt) {
-            case 'f':
-                filename = optarg;
-                break;
-            case 'd':
-                poll_period = atoi(optarg);
-                break;
-            case 'i':
-                idle_threshold = atoi(optarg);
-                break;
-            case '?':
-                if(optopt == 'f' || optopt == 'd' || optopt == 'i')
-                    fprintf(stderr, "Option -%c requires an argument.\n",
-                            optopt);
-                else if(isprint(optopt))
-                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
-                else
-                    fprintf(stderr, "Unknown option character `\\x%x'.\n",
-                            optopt);
-                return 1;
-            default:
-                abort();
-        }
+    if (parse_options(argc, argv, &opts)) {
+        return 1;
     }
 
-    if(filename != NULL) {
-        report = fopen(filename, "a");
-    }
+    report = fopen(opts.filename, "a");
     if(report == NULL) {
         report = stdout;
     }
@@ -89,7 +61,7 @@ int main (int argc, char *argv[]) {
 
         if(idle < current.last_idle) {
             /* New idle "session" */
-            if(idle > idle_threshold * (unsigned long)1000) {
+            if(idle > opts.idle_threshold * (unsigned long)1000) {
                 /* It has been long enough, so reset the idle timer */
                 /* ...but round up. */
                 time(&current.idle_start);
@@ -112,12 +84,12 @@ int main (int argc, char *argv[]) {
         /* Reset this, so that we don't have problems exiting */
         current.force = 0;
 
-        if(poll_period < 1) {
+        if(opts.poll_period < 1) {
             /* I might want to use this for one-off scripts */
             break;
         }
 
-        sleep(poll_period);
+        sleep(opts.poll_period);
     }
 
     /*
@@ -138,16 +110,51 @@ void handle_break (int signal) {
     current.force = 1;
 }
 
-void window_state_init (struct window_state *ws) {
-    ws->force = 0;
-    ws->last_idle = (unsigned long)(-1);
-    ws->idle_start = 0;
-    ws->idle_accumulated = 0;
-    time(&ws->window_start);
-    strcpy((char *)ws->window_title, "");
+int parse_options (int argc, char **argv, struct program_options *opts) {
+    int chOpt;              /* For getopt() */
+
+    opterr = 0;
+    strcpy(opts->filename, "");
+    opts->poll_period = 1;
+    opts->idle_threshold = 180;
+    while((chOpt = getopt(argc, argv, "d:f:i:")) != -1) {
+        switch(chOpt) {
+            case 'f':
+                strncpy(opts->filename, optarg, sizeof(opts->filename));
+                break;
+            case 'd':
+                opts->poll_period = atoi(optarg);
+                break;
+            case 'i':
+                opts->idle_threshold = atoi(optarg);
+                break;
+            case '?':
+                if(optopt == 'f' || optopt == 'd' || optopt == 'i')
+                    fprintf(stderr, "Option -%c requires an argument.\n",
+                            optopt);
+                else if(isprint(optopt))
+                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
+                else
+                    fprintf(stderr, "Unknown option character `\\x%x'.\n",
+                            optopt);
+                return 1;
+            default:
+                return 2;
+        }
+    }
+    return 0;
 }
 
-int is_window_updated (xdo_t *xdo, struct window_state *ws) {
+void window_state_init (struct window_state *state) {
+    state->force = 0;
+    state->last_idle = (unsigned long)(-1);
+    state->idle_start = 0;
+    state->idle_accumulated = 0;
+    time(&state->window_start);
+    strcpy((char *)state->window_title, "");
+}
+
+int is_window_updated (xdo_t *xdo, struct window_state *state) {
     /*
      *  Grab the focused window's ID and title
      *  If it's a new title, better to keep track of file saves than not,
@@ -169,15 +176,15 @@ int is_window_updated (xdo_t *xdo, struct window_state *ws) {
 
     xdo_get_focused_window_sane(xdo, &win);
     xdo_get_window_name(xdo, win, &name, &n_len, &n_type);
-    if(strcmp((char *)name, (char *)ws->window_title) || ws->force) {
-        now = window_state_report(ws);
-        ws->window_start = now;
-        ws->window_id = win;
-        strcpy((char *)ws->window_title, (char *)name);
-        ws->idle_accumulated = 0;
-        ws->idle_start = 0;
-        ws->last_idle = (unsigned long)(-1);
-        if (ws->force) {
+    if(strcmp((char *)name, (char *)state->window_title) || state->force) {
+        now = window_state_report(state);
+        state->window_start = now;
+        state->window_id = win;
+        strcpy((char *)state->window_title, (char *)name);
+        state->idle_accumulated = 0;
+        state->idle_start = 0;
+        state->last_idle = (unsigned long)(-1);
+        if (state->force) {
             poll_continue = 0;
         }
         return 1;
@@ -185,7 +192,7 @@ int is_window_updated (xdo_t *xdo, struct window_state *ws) {
     return 0;
 }
 
-time_t window_state_report (struct window_state *ws) {
+time_t window_state_report (struct window_state *state) {
     /*
      *  Get the duration the most recent window has been used and
      *  retrieve the relevant CSV.
@@ -194,13 +201,13 @@ time_t window_state_report (struct window_state *ws) {
             window_dur;
 
     time(&window_end);
-    window_dur = window_end - ws->window_start;
+    window_dur = window_end - state->window_start;
 
-    window_state_format(ws, NULL, &window_dur);
+    window_state_format(state, NULL, &window_dur);
     return window_end;
 }
 
-char * window_state_format (struct window_state *ws, time_t *instead, time_t *duration) {
+char * window_state_format (struct window_state *state, time_t *instead, time_t *duration) {
     /*
      *  Create the CSV line inside the window state, ready for printing.
      *
@@ -208,29 +215,29 @@ char * window_state_format (struct window_state *ws, time_t *instead, time_t *du
      *  state's duration.
      */
     time_t     *time = instead;
-    struct tm  *t = NULL;
+    struct tm  *start = NULL;
 
     if (time == NULL) {
-        time = &ws->window_start;
+        time = &state->window_start;
     }
 
-    t = localtime(time);
+    start = localtime(time);
     /* YYYY,MM,DD,HH,MM,SS,Window ID,Window Title,Time Used,Time Idle */
-    sprintf(ws->csv, "%04d,%02d,%02d,%02d,%02d,%02d,%08X,%s,%u,%u",
-            t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
-            t->tm_hour, t->tm_min, t->tm_sec,
-            (unsigned)ws->window_id, ws->window_title,
-            (unsigned)(*duration - ws->idle_accumulated),
-            (unsigned)ws->idle_accumulated);
-    return ws->csv;
+    sprintf(state->csv, "%04d,%02d,%02d,%02d,%02d,%02d,%08X,%s,%u,%u",
+            start->tm_year + 1900, start->tm_mon + 1, start->tm_mday,
+            start->tm_hour, start->tm_min, start->tm_sec,
+            (unsigned)state->window_id, state->window_title,
+            (unsigned)(*duration - state->idle_accumulated),
+            (unsigned)state->idle_accumulated);
+    return state->csv;
 }
 
-unsigned long idle_time(xcb_connection_t *conn, xcb_screensaver_query_info_cookie_t c) {
+unsigned long idle_time(xcb_connection_t *conn, xcb_screensaver_query_info_cookie_t cookie) {
     /*
      *  Grab the current idle time, expressed in milliseconds.
      */
     xcb_screensaver_query_info_reply_t *info =
-            xcb_screensaver_query_info_reply(conn, c, NULL);
+            xcb_screensaver_query_info_reply(conn, cookie, NULL);
     uint32_t idle = info->ms_since_user_input;
     free(info);
     return idle;

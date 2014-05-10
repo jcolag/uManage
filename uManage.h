@@ -11,7 +11,14 @@ struct window_state {
     char            csv[1024];          /* For reporting - output only */
 };
 
+struct program_options {
+    int             poll_period,
+                    idle_threshold;     /* Treat time as idle (s) */
+    char            filename[256];
+};
+
 void   handle_break (int signal);
+int    parse_options (int, char **, struct program_options *);
 void   window_state_init (struct window_state *);
 time_t window_state_report (struct window_state *);
 char * window_state_format (struct window_state *, time_t *, time_t *);
@@ -20,3 +27,4 @@ int    is_window_updated (xdo_t *, struct window_state *);
 unsigned long idle_time(xcb_connection_t *, xcb_screensaver_query_info_cookie_t);
 
 #endif
+
