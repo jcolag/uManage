@@ -215,11 +215,13 @@ char * window_state_format (struct window_state *ws, time_t *instead, time_t *du
     }
 
     t = localtime(time);
+    /* YYYY,MM,DD,HH,MM,SS,Window ID,Window Title,Time Used,Time Idle */
     sprintf(ws->csv, "%04d,%02d,%02d,%02d,%02d,%02d,%08X,%s,%u,%u",
             t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
             t->tm_hour, t->tm_min, t->tm_sec,
             (unsigned)ws->window_id, ws->window_title,
-            (unsigned)*duration, (unsigned)ws->idle_accumulated);
+            (unsigned)(*duration - ws->idle_accumulated),
+            (unsigned)ws->idle_accumulated);
     return ws->csv;
 }
 
