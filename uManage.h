@@ -1,4 +1,5 @@
 #ifndef U_MANAGE__H
+#define U_MANAGE__H
 
 struct window_state {
     int             force;              /* Exiting, so report anyway */
@@ -11,14 +12,7 @@ struct window_state {
     char            csv[1024];          /* For reporting - output only */
 };
 
-struct program_options {
-    int             poll_period,
-                    idle_threshold;     /* Treat time as idle (s) */
-    char            filename[256];
-};
-
 void   handle_break (int signal);
-int    parse_options (int, char **, struct program_options *);
 void   window_state_init (struct window_state *);
 time_t window_state_report (struct window_state *);
 char * window_state_format (struct window_state *, time_t *, time_t *);

@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <getopt.h>
+#include <pwd.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,8 +8,11 @@
 #include <time.h>
 #include <unistd.h>
 #include <xdo.h>
+#include <sys/types.h>
 #include <xcb/screensaver.h>
+#include <glib.h>
 #include "uManage.h"
+#include "config.h"
 
 int                 poll_continue = 1;
 FILE               *report;
@@ -34,6 +38,7 @@ int main (int argc, char *argv[]) {
      */
     signal(SIGINT, handle_break);
 
+    get_configuration(&opts);
     if (parse_options(argc, argv, &opts)) {
         return 1;
     }
@@ -108,41 +113,6 @@ void handle_break (int signal) {
         return;
     }
     current.force = 1;
-}
-
-int parse_options (int argc, char **argv, struct program_options *opts) {
-    int chOpt;              /* For getopt() */
-
-    opterr = 0;
-    strcpy(opts->filename, "");
-    opts->poll_period = 1;
-    opts->idle_threshold = 180;
-    while((chOpt = getopt(argc, argv, "d:f:i:")) != -1) {
-        switch(chOpt) {
-            case 'f':
-                strncpy(opts->filename, optarg, sizeof(opts->filename));
-                break;
-            case 'd':
-                opts->poll_period = atoi(optarg);
-                break;
-            case 'i':
-                opts->idle_threshold = atoi(optarg);
-                break;
-            case '?':
-                if(optopt == 'f' || optopt == 'd' || optopt == 'i')
-                    fprintf(stderr, "Option -%c requires an argument.\n",
-                            optopt);
-                else if(isprint(optopt))
-                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
-                else
-                    fprintf(stderr, "Unknown option character `\\x%x'.\n",
-                            optopt);
-                return 1;
-            default:
-                return 2;
-        }
-    }
-    return 0;
 }
 
 void window_state_init (struct window_state *state) {
