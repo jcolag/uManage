@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <errno.h>
 #include <getopt.h>
 #include <pwd.h>
 #include <signal.h>
@@ -103,7 +104,9 @@ int main (int argc, char *argv[]) {
     /*
      * Clean up
      */
-    fclose(report);
+    if (report != stdout) {
+        fclose(report);
+    }
     return 0;
 }
 

@@ -27,7 +27,7 @@ The options are:
 
  - `-i` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
 
- - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing file.
+ - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
 
 Alternate Configuration
 -----------------------

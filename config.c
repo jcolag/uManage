@@ -60,11 +60,6 @@ int save_configuration (struct program_options *opts) {
     GKeyFileFlags flags;
     GError *error = NULL;
 
-    /* Defaults */
-    strcpy(opts->filename, "");
-    opts->poll_period = 1;
-    opts->idle_threshold = 180;
-
     /* Create a new GKeyFile object and a bitwise list of flags. */
     keyfile = g_key_file_new ();
     flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
