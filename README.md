@@ -25,7 +25,23 @@ The options are:
 
  - -f:  The name of the file to log timing information.  If no file is specified, the program directs output to `stdout`.
 
- - -i:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.
+ - -i:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
+
+Alternate Configuration
+-----------------------
+
+You can also set options with a configuration file in your home directory.  At this time, there are equivalent options to the above, divided into two categories.
+
+The following is an example `~/.uManage` file with all options:
+
+    [File]
+    log=~/logs/useractivity.csv
+    
+    [Timing]
+    idle=240
+    poll=2
+
+The aforementioned defaults are still in effect if they are not replaced by the file, and command-line options override the file's options.
 
 Output
 ======
