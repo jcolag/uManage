@@ -56,7 +56,7 @@ Breaking that down, we have:
 
  - Time Idle:  Time (in seconds) that the current window has been open but idle.
 
-##Notes##
+###Notes###
 
 The time and date has been split up under the philosophy that it is easier to reassemble than to break apart later.
 
