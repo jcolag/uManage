@@ -21,18 +21,22 @@ Run _uManage_ from the command line, for now, as follows:
 
 The options are:
 
- - -d:  Delay (in seconds) between looks at the current window.  The default is one second (1s).
+ - `-d` _`delay`_:  Delay (in seconds) between looks at the current window.  The default is one second (1s).
 
- - -f:  The name of the file to log timing information.  If no file is specified, the program directs output to `stdout`.
+ - `-f` _`filename`_:  The name of the file to log timing information.  If no file is specified, the program directs output to `stdout`.
 
- - -i:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
+ - `-i` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
+
+ - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing file.
 
 Alternate Configuration
 -----------------------
 
 You can also set options with a configuration file in your home directory.  At this time, there are equivalent options to the above, divided into two categories.
 
-The following is an example `~/.uManage` file with all options:
+For obvious reasons, there is no equivalent to `-s`.
+
+The following is an example `~/.uManage` file with all available options set:
 
     [File]
     log=~/logs/useractivity.csv
@@ -99,6 +103,10 @@ Since idle time is important, we'll need [XCB](http://xcb.freedesktop.org/), the
 We'll also need to know what window we're looking at, and [xdotool](http://www.semicomplete.com/projects/xdotool/), or rather its library form, will also be useful.
 
     sudo apt-get install libxdo-dev
+
+Glib provides its "key-value file parser" to manage the configuration file.
+
+    sudo apt-get install libglib2.0-dev
 
 More to come as the application advances, but this should be a good start.
 

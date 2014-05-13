@@ -42,6 +42,9 @@ int main (int argc, char *argv[]) {
     if (parse_options(argc, argv, &opts)) {
         return 1;
     }
+    if (opts.save_options) {
+        save_configuration(&opts);
+    }
 
     report = fopen(opts.filename, "a");
     if(report == NULL) {

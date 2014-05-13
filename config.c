@@ -24,6 +24,7 @@ int get_configuration (struct program_options *opts) {
     strcpy(opts->filename, "");
     opts->poll_period = 1;
     opts->idle_threshold = 180;
+    opts->save_options = 0;
 
     /* Create a new GKeyFile object and a bitwise list of flags. */
     keyfile = g_key_file_new ();
@@ -51,11 +52,52 @@ int get_configuration (struct program_options *opts) {
     return 1;
 }
 
+int save_configuration (struct program_options *opts) {
+    struct passwd *passwd = getpwuid(getuid());
+    const char *homedir = passwd->pw_dir;
+    char keyfilename[256];
+    GKeyFile *keyfile;
+    GKeyFileFlags flags;
+    GError *error = NULL;
+
+    /* Defaults */
+    strcpy(opts->filename, "");
+    opts->poll_period = 1;
+    opts->idle_threshold = 180;
+
+    /* Create a new GKeyFile object and a bitwise list of flags. */
+    keyfile = g_key_file_new ();
+    flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
+
+    /* Load the GKeyFile from keyfile.conf or return. */
+    sprintf(keyfilename, "%s/.uManage", homedir);
+    if (!g_key_file_load_from_file (keyfile, keyfilename, flags, &error)) {
+        ;
+    }
+
+    /* Fill in any valid settings */
+    if (opts->poll_period != 0) {
+        g_key_file_set_integer(keyfile, "Timing", "poll", opts->poll_period);
+    }
+    if (opts->idle_threshold != 0) {
+        g_key_file_set_integer(keyfile, "Timing", "idle", opts->idle_threshold);
+    }
+    if (strcmp(opts->filename, "")) {
+        g_key_file_set_string(keyfile, "File", "log", opts->filename);
+    }
+    if (!g_key_file_save_to_file(keyfile, keyfilename, NULL)) {
+        fprintf(stderr, "Cannot save configuration to %s:  %s\n",
+                keyfilename, error->message);
+        return 0;
+    }
+    return 1;
+}
+
 int parse_options (int argc, char **argv, struct program_options *opts) {
     int chOpt;              /* For getopt() */
 
     opterr = 0;
-    while((chOpt = getopt(argc, argv, "d:f:i:")) != -1) {
+    while((chOpt = getopt(argc, argv, "d:f:i:s")) != -1) {
         switch(chOpt) {
             case 'f':
                 strncpy(opts->filename, optarg, sizeof(opts->filename));
@@ -65,6 +107,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 break;
             case 'i':
                 opts->idle_threshold = atoi(optarg);
+                break;
+            case 's':
+                opts->save_options = 1;
                 break;
             case '?':
                 if(optopt == 'f' || optopt == 'd' || optopt == 'i')
