@@ -26,11 +26,11 @@ int get_configuration (struct program_options *opts) {
     opts->idle_threshold = 180;
     opts->save_options = 0;
 
-    /* Create a new GKeyFile object and a bitwise list of flags. */
+    /* Preserve non-settings if we mess with anything */
     keyfile = g_key_file_new ();
     flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
 
-    /* Load the GKeyFile from keyfile.conf or return. */
+    /* Leave if the file isn't available */
     sprintf(keyfilename, "%s/.uManage", homedir);
     if (!g_key_file_load_from_file (keyfile, keyfilename, flags, &error)) {
         return 0;
@@ -60,17 +60,17 @@ int save_configuration (struct program_options *opts) {
     GKeyFileFlags flags;
     GError *error = NULL;
 
-    /* Create a new GKeyFile object and a bitwise list of flags. */
+    /* Preserve as much of the file later as possible */
     keyfile = g_key_file_new ();
     flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
 
-    /* Load the GKeyFile from keyfile.conf or return. */
+    /* Try to load the configuration file and leave if unavailable */
     sprintf(keyfilename, "%s/.uManage", homedir);
     if (!g_key_file_load_from_file (keyfile, keyfilename, flags, &error)) {
-        ;
+        return 0;
     }
 
-    /* Fill in any valid settings */
+    /* Save any valid settings */
     if (opts->poll_period != 0) {
         g_key_file_set_integer(keyfile, "Timing", "poll", opts->poll_period);
     }
