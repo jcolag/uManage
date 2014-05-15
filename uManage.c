@@ -1,5 +1,4 @@
 #include <ctype.h>
-#include <errno.h>
 #include <getopt.h>
 #include <pwd.h>
 #include <signal.h>
