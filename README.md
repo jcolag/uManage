@@ -15,9 +15,9 @@ So, uManage is a simple application to do the tedious work for you.
 Usage
 =====
 
-Run _uManage_ from the command line, for now, as follows:
+Run _uManage_ from the command line (for now) as follows:
 
-    uManage [-d loop_delay] [-f log_file] [-i idle_threshold]
+    uManage [-d loop_delay] [-f log_file] [-i idle_threshold] [-s]
 
 The options are:
 
@@ -109,9 +109,4 @@ Glib provides its "key-value file parser" to manage the configuration file.
     sudo apt-get install libglib2.0-dev
 
 More to come as the application advances, but this should be a good start.
-
-License
-=======
-
-I am releasing uManage under the GPL v3.
 
