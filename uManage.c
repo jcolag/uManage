@@ -1,3 +1,6 @@
+#ifdef GUI
+#include <pthread.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,6 +11,7 @@
 #include "winmgmt.h"
 #include "config.h"
 #include "idle.h"
+#include "indicate.h"
 
 struct window_state current;
 
@@ -16,6 +20,10 @@ int main (int argc, char *argv[]) {
     time_t              idle_dur;
     int                 poll_continue = 1;
     FILE               *report;
+#ifdef GUI
+    void               *status;
+    pthread_t           thr_menu;
+#endif
 
     struct program_options opts;
 
@@ -44,6 +52,10 @@ int main (int argc, char *argv[]) {
     init_idle();
     init_winmgmt();
     window_state_init(&current);
+#ifdef GUI
+    init_indicator(argc, argv);
+    pthread_create(&thr_menu, NULL, run_indicator, &current.force);
+#endif
 
     /*
      * Main loop
@@ -92,6 +104,9 @@ int main (int argc, char *argv[]) {
     /*
      * Clean up
      */
+#ifdef GUI
+    pthread_join(thr_menu, &status);
+#endif
     if (report != stdout) {
         fclose(report);
     }
@@ -106,7 +121,11 @@ void handle_break (int signal) {
     if (signal != SIGINT) {
         return;
     }
+#ifdef GUI
+    stop_indicator();
+#else
     current.force = 1;
+#endif
 }
 
 void window_state_init (struct window_state *state) {
