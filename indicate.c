@@ -4,7 +4,6 @@
 #include "indicate.h"
 #include "umenu_glade.h"
 #include "uoptions.h"
-#include "uoptions_glade.h"
 
 struct program_options *opts;
 int *force;

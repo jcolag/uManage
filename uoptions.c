@@ -1,8 +1,5 @@
-#include <stdio.h>
 #include <string.h>
-#include <xdo.h>
 #include <gtk/gtk.h>
-#include "uManage.h"
 #include "config.h"
 #include "uoptions.h"
 #include "uoptions_glade.h"
