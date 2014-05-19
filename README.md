@@ -98,6 +98,8 @@ The _Window ID_ has been included to make it easier to group similar activities 
 
 The _Time Used_ for each window represents active usage (user input has occurred).  It does not include idle time, so that a window that is merely open does not accumulate time.
 
+I should also note that `umenu.glade` is _not_ a Glade-produced file.  Or, rather, it was, but since Glade doesn't appear to support `GtkMenu`s, and certainly not as top-level objects, I did some hand-editing to make it fly.  So, don't go loading it up to make changes, or at least don't be surprised if you're attacked by monsters when you do.
+
 Name
 ====
 
