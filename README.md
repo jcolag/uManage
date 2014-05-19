@@ -12,6 +12,15 @@ Maybe I didn't look hard enough, but every time I try to monitor my computer usa
 
 So, uManage is a simple application to do the tedious work for you.
 
+Two Builds
+==========
+
+Two versions of _uManage_ are built with this package.
+
+ - `uManage` is purely a command-line program.
+
+ - `uManageUi` uses the same code and operation described, but adds an application notification ("system tray") menu to configure options and exit the program.
+
 Usage
 =====
 
@@ -28,6 +37,8 @@ The options are:
  - `-i` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
 
  - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
+
+_uManageUi_ can be invoked the same way.  However, there is potential to also run it _without_ the command-line, provided the output is logged to a file, since the options can be configured and the user can exit graphically.
 
 Alternate Configuration
 -----------------------
@@ -46,6 +57,8 @@ The following is an example `~/.uManage` file with all available options set:
     poll=2
 
 The aforementioned defaults are still in effect if they are not replaced by the file, and command-line options override the file's options.
+
+Also, as suggested earlier, _uManageUi_ can also change the configuration with a graphical interface.
 
 Output
 ======
@@ -76,7 +89,8 @@ Breaking that down, we have:
 
  - Time Idle:  Time (in seconds) that the current window has been open but idle.
 
-###Notes###
+Notes
+-----
 
 The time and date has been split up under the philosophy that it is easier to reassemble than to break apart later.
 
@@ -107,6 +121,14 @@ We'll also need to know what window we're looking at, and [xdotool](http://www.s
 Glib provides its "key-value file parser" to manage the configuration file.
 
     sudo apt-get install libglib2.0-dev
+
+The graphical interface is handled with GTK+.
+
+    sudo apt-get install libgtk-3-dev
+
+The application menu also uses the Application Indicator library.
+
+    sudo apt-get install appindicator-dev
 
 More to come as the application advances, but this should be a good start.
 
