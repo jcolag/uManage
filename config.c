@@ -64,10 +64,10 @@ int save_configuration (struct program_options *opts) {
     keyfile = g_key_file_new ();
     flags = G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
 
-    /* Try to load the configuration file and leave if unavailable */
+    /* Try to load the configuration file */
     sprintf(keyfilename, "%s/.uManage", homedir);
     if (!g_key_file_load_from_file (keyfile, keyfilename, flags, &error)) {
-        return 0;
+        ;
     }
 
     /* Save any valid settings */
