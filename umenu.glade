@@ -6,6 +6,14 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
+      <object class="GtkMenuItem" id="Menu_Opts">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Show _Options</property>
+        <property name="use_underline">True</property>
+     </object>
+   </child>
+    <child>
       <object class="GtkMenuItem" id="Menu_Quit">
         <property name="visible">True</property>
         <property name="can_focus">False</property>

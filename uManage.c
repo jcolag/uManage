@@ -53,7 +53,7 @@ int main (int argc, char *argv[]) {
     init_winmgmt();
     window_state_init(&current);
 #ifdef GUI
-    init_indicator(argc, argv);
+    init_indicator(argc, argv, &opts);
     pthread_create(&thr_menu, NULL, run_indicator, &current.force);
 #endif
 
