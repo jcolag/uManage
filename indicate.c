@@ -5,17 +5,25 @@
 #include "umenu_glade.h"
 #include "uoptions.h"
 
-struct program_options *opts;
+struct program_options *progopts = NULL;
 int *force;
 
 void activate_options (GtkMenuItem *, gpointer);
 void activate_quit (GtkMenuItem *, gpointer);
 
 void activate_options (GtkMenuItem *menu, gpointer data) {
-    open_uoptions(opts);
+    if (menu == NULL && data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    open_uoptions(progopts);
 }
 
 void activate_quit (GtkMenuItem *menu, gpointer data) {
+    if (menu == NULL && data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
     *force = 1;
     gtk_main_quit();
 }
@@ -25,7 +33,7 @@ void stop_indicator (void) {
 }
 
 void init_indicator(int argc, char *argv[], struct program_options *options) {
-    opts = options;
+    progopts = options;
     gtk_init(&argc, &argv);
     load_umenu_from_file(0);
 }
