@@ -1,4 +1,4 @@
-#ifdef GUI
+#ifdef GUI             /* GTK+ runs its own message loop */
 #include <pthread.h>
 #endif
 #include <signal.h>
@@ -13,28 +13,27 @@
 #include "idle.h"
 #include "indicate.h"
 
-struct window_state current;
+struct window_state     current;
+struct program_options  opts;
+FILE                   *report;
+int                     poll_continue = 1;
 
 int main (int argc, char *argv[]) {
-    unsigned long       idle;               /* Idle time in ms */
-    time_t              idle_dur;
-    int                 poll_continue = 1;
-    FILE               *report;
 #ifdef GUI
     void               *status;
     pthread_t           thr_menu;
 #endif
 
-    struct program_options opts;
-
     /*
      * Program setup
-     *     Gracefully handle user interrupt
-     *     Get command-line options
-     *     Open report file for logging
-     *     Initialize variables
+     *     Handle user interrupt and alarm
+     *     Get program options
+     *     Open report file for logging if needed
+     *     Initialize UI
      */
     signal(SIGINT, handle_break);
+    signal(SIGALRM, handle_alarm);
+    alarm(1);
 
     get_configuration(&opts);
     if (parse_options(argc, argv, &opts)) {
@@ -57,53 +56,14 @@ int main (int argc, char *argv[]) {
     pthread_create(&thr_menu, NULL, run_indicator, &current.force);
 #endif
 
-    /*
-     * Main loop
-     *     Check for new idling
-     *     Accumulate total idle time per window use
-     *     Check for changed window
-     *     Log status if interesting
-     *     Set for next iteration
-     */
     while(poll_continue || current.force) {
-        idle = idle_time();
-
-        if(idle < current.last_idle) {
-            /* New idle "session" */
-            if(idle > opts.idle_threshold * (unsigned long)1000) {
-                /* It has been long enough, so reset the idle timer */
-                /* ...but round up. */
-                time(&current.idle_start);
-                current.idle_start -= (idle + 500) / 1000;
-            }
-            else if(current.idle_start != 0) {
-                /* If we're tracking idle time and it grows, add it */
-                time(&idle_dur);
-                idle_dur -= current.idle_start;
-                current.idle_accumulated += idle_dur;
-                current.idle_start = 0;
-            }
-        }
-
-        if(is_window_updated(&current, &poll_continue)) {
-            /* Flush in case someone monitors the output file */
-            fprintf(report, "%s\n", current.csv);
-            fflush(report);
-        }
-        /* Reset this, so that we don't have problems exiting */
-        current.force = 0;
-
-        if(opts.poll_period < 1) {
-            /* I might want to use this for one-off scripts */
-            break;
-        }
-
-        sleep(opts.poll_period);
+        sleep(1);                       /* Just wait for program close */
     }
-
     /*
      * Clean up
      */
+    alarm(1);                           /* Last hurrah */
+    sleep(1);
 #ifdef GUI
     pthread_join(thr_menu, &status);
 #endif
@@ -126,6 +86,56 @@ void handle_break (int signal) {
 #else
     current.force = 1;
 #endif
+}
+
+void handle_alarm (int sig) {
+    /*
+     *     Check for new idling
+     *     Accumulate total idle time per window use
+     *     Check for changed window
+     *     Log status if interesting
+     *     Set for next iteration
+     */
+    unsigned long       idle;               /* Idle time in ms */
+    time_t              idle_dur;
+
+    if (sig != SIGALRM) {
+        return;
+    }
+    signal(SIGALRM, SIG_IGN);
+    idle = idle_time();
+
+    if(idle < current.last_idle) {
+        /* New idle "session" */
+        if(idle > opts.idle_threshold * (unsigned long)1000) {
+            /* It has been long enough, so reset the idle timer */
+            /* ...but round up. */
+            time(&current.idle_start);
+            current.idle_start -= (idle + 500) / 1000;
+        }
+        else if(current.idle_start != 0) {
+            /* If we're tracking idle time and it grows, add it */
+            time(&idle_dur);
+            idle_dur -= current.idle_start;
+            current.idle_accumulated += idle_dur;
+            current.idle_start = 0;
+        }
+    }
+
+    if(is_window_updated(&current, &poll_continue)) {
+        /* Flush in case someone monitors the output file */
+        fprintf(report, "%s\n", current.csv);
+        fflush(report);
+    }
+    /* Reset this, so that we don't have problems exiting */
+    current.force = 0;
+
+    if(opts.poll_period < 1) {
+        /* I might want to use this for one-off scripts */
+        return;
+    }
+    signal(SIGALRM, handle_alarm);
+    alarm(opts.poll_period);
 }
 
 void window_state_init (struct window_state *state) {

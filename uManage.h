@@ -12,7 +12,8 @@ struct window_state {
     char            csv[1024];          /* For reporting - output only */
 };
 
-void   handle_break (int signal);
+void   handle_break (int);
+void   handle_alarm (int);
 void   window_state_init (struct window_state *);
 
 #endif
