@@ -32,36 +32,67 @@ void open_uoptions(struct program_options *orig) {
 }
 
 void on_Poll_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
-    gboolean on = gtk_switch_get_active(button);
-    gtk_widget_set_sensitive ((GtkWidget *)uoptions_Poll_Input, on);
-    poll_state = on;
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_Poll_Input, onSw);
+    poll_state = onSw;
 }
 
 void on_Idle_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
-    gboolean on = gtk_switch_get_active(button);
-    gtk_widget_set_sensitive ((GtkWidget *)uoptions_Idle_Input, on);
-    idle_state = on;
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_Idle_Input, onSw);
+    idle_state = onSw;
 }
 
 void on_File_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
-    gboolean on = gtk_switch_get_active(button);
-    gtk_widget_set_sensitive ((GtkWidget *)uoptions_File_Input, on);
-    file_state = on;
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_File_Input, onSw);
+    file_state = onSw;
 }
 
 void on_Poll_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data) {
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
     newest.poll_period = gtk_spin_button_get_value_as_int(spinbutton);
 }
 
 void on_Idle_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data) {
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
     newest.idle_threshold = gtk_spin_button_get_value_as_int(spinbutton);
 }
 
 void on_File_Input_changed (GtkEntry *entry, gpointer user_data) {
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
     strcpy(newest.filename, gtk_entry_get_text(entry));
 }
 
 void on_Save_Button_clicked (GtkButton *button, gpointer user_data) {
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
     if (oldest == NULL) {
         return;
     }
