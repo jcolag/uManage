@@ -2,13 +2,16 @@
 #include <string.h>
 #include <time.h>
 #include <xdo.h>
+#include "config.h"
 #include "uManage.h"
 #include "winmgmt.h"
 
-xdo_t  *xdo;
+struct program_options    *options = NULL;
+xdo_t                     *xdo;
 
-void init_winmgmt(void) {
+void init_winmgmt(struct program_options *progopts) {
     xdo = xdo_new(NULL);
+    options = progopts;
 }
 
 int is_window_updated (struct window_state *state, int *poll_continue) {
@@ -71,6 +74,7 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
      *  If the caller set the instead parameter, use it instead of the
      *  state's duration.
      */
+    char        tstr[64];
     time_t     *time = instead;
     struct tm  *start = NULL;
 
@@ -79,10 +83,10 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
     }
 
     start = localtime(time);
-    /* YYYY,MM,DD,HH,MM,SS,Window ID,Window Title,Time Used,Time Idle */
-    sprintf(state->csv, "%04d,%02d,%02d,%02d,%02d,%02d,%08X,%s,%u,%u",
-            start->tm_year + 1900, start->tm_mon + 1, start->tm_mday,
-            start->tm_hour, start->tm_min, start->tm_sec,
+    strftime(tstr, sizeof(tstr), options->time_format, start);
+    /* Time,Window ID,Window Title,Time Used,Time Idle */
+    sprintf(state->csv, "%s,%08X,%s,%u,%u",
+            tstr,
             (unsigned)state->window_id, state->window_title,
             (unsigned)(*duration - state->idle_accumulated),
             (unsigned)state->idle_accumulated);

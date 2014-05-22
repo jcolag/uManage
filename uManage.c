@@ -49,7 +49,7 @@ int main (int argc, char *argv[]) {
     }
 
     init_idle();
-    init_winmgmt();
+    init_winmgmt(&opts);
     window_state_init(&current);
 #ifdef GUI
     init_indicator(argc, argv, &opts);

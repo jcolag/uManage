@@ -22,6 +22,7 @@ int get_configuration (struct program_options *opts) {
 
     /* Defaults */
     strcpy(opts->filename, "");
+    strcpy(opts->time_format, "%Y,%m,%d,%H,%M,%S");
     opts->poll_period = 1;
     opts->idle_threshold = 180;
     opts->save_options = 0;
