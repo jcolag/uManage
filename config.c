@@ -46,6 +46,10 @@ int get_configuration (struct program_options *opts) {
     if (t_int != 0) {
         opts->idle_threshold = t_int;
     }
+    t_str = g_key_file_get_string(keyfile, "Timing", "format", NULL);
+    if (t_str != NULL) {
+        strcpy(opts->time_format, t_str);
+    }
     t_str = g_key_file_get_string(keyfile, "File", "log", NULL);
     if (t_str != NULL) {
         strcpy(opts->filename, t_str);
@@ -78,6 +82,9 @@ int save_configuration (struct program_options *opts) {
     if (opts->idle_threshold != 0) {
         g_key_file_set_integer(keyfile, "Timing", "idle", opts->idle_threshold);
     }
+    if (strcmp(opts->time_format, "")) {
+        g_key_file_set_string(keyfile, "Timing", "format", opts->time_format);
+    }
     if (strcmp(opts->filename, "")) {
         g_key_file_set_string(keyfile, "File", "log", opts->filename);
     }
@@ -93,7 +100,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
     int chOpt;              /* For getopt() */
 
     opterr = 0;
-    while((chOpt = getopt(argc, argv, "d:f:i:s")) != -1) {
+    while((chOpt = getopt(argc, argv, "d:f:i:st:")) != -1) {
         switch(chOpt) {
             case 'f':
                 strncpy(opts->filename, optarg, sizeof(opts->filename));
@@ -106,6 +113,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 break;
             case 's':
                 opts->save_options = 1;
+                break;
+            case 't':
+                strncpy(opts->time_format, optarg, sizeof(opts->time_format));
                 break;
             case '?':
                 if(optopt == 'f' || optopt == 'd' || optopt == 'i')

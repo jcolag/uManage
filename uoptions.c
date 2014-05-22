@@ -6,7 +6,8 @@
 
 int     poll_state = 0,
         idle_state = 0,
-        file_state = 0;
+        file_state = 0,
+        tfmt_state = 0;
 
 struct program_options  newest,
                        *oldest;
@@ -64,6 +65,17 @@ void on_File_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) 
     file_state = onSw;
 }
 
+void on_TFmt_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_TFmt_Input, onSw);
+    tfmt_state = onSw;
+}
+
 void on_Poll_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data) {
     if (user_data == NULL) {
         /* Bogus condition to use parameters */
@@ -88,6 +100,14 @@ void on_File_Input_changed (GtkEntry *entry, gpointer user_data) {
     strcpy(newest.filename, gtk_entry_get_text(entry));
 }
 
+void on_TFmt_Input_changed (GtkEntry *entry, gpointer user_data) {
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    strcpy(newest.time_format, gtk_entry_get_text(entry));
+}
+
 void on_Save_Button_clicked (GtkButton *button, gpointer user_data) {
     if (button == NULL && user_data == NULL) {
         /* Bogus condition to use parameters */
@@ -104,6 +124,9 @@ void on_Save_Button_clicked (GtkButton *button, gpointer user_data) {
     }
     if (file_state) {
         strcpy(oldest->filename, newest.filename);
+    }
+    if (tfmt_state) {
+        strcpy(oldest->time_format, newest.time_format);
     }
     save_configuration(oldest);
 }
