@@ -24,6 +24,10 @@ void open_uoptions(struct program_options *orig) {
             gtk_switch_set_active(uoptions_Idle_Switch, 1);
             gtk_spin_button_set_value(uoptions_Idle_Input, oldest->idle_threshold);
         }
+        if (strcmp(oldest->time_format, "")) {
+            gtk_switch_set_active(uoptions_TFmt_Switch, 1);
+            gtk_entry_set_text(uoptions_TFmt_Input, oldest->time_format);
+        }
         if (strcmp(oldest->filename, "")) {
             gtk_switch_set_active(uoptions_File_Switch, 1);
             gtk_entry_set_text(uoptions_File_Input, oldest->filename);
