@@ -109,8 +109,10 @@ Or think of it as "You Manage," since you can, indeed, do that.
 
 Or I'm running on Ubuntu, and I assume that my eventual goals for a GUI will end up integrating with or at least touching on Unity, somehow.  So, maybe it's an abbreviation for it.  Probably not, though.
 
-Requirements
-============
+Sources and Requirements
+========================
+
+The icon for the application notification menu is adapted from __[Clock](http://thenounproject.com/term/clock/6781/) by Olyn LeRoy from The Noun Project__, used under a [Creative Commons Attribution 3.0](https://creativecommons.org/licenses/by/3.0/us/) license.
 
 Since idle time is important, we'll need [XCB](http://xcb.freedesktop.org/), the X protocol C-language Binding, especially its screensaver libraries.
 

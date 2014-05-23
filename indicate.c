@@ -1,3 +1,4 @@
+#include <string.h>
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
 #include "config.h"
@@ -40,11 +41,13 @@ void init_indicator(int argc, char *argv[], struct program_options *options) {
 
 void *run_indicator(void *arg) {
     AppIndicator *indicator;
+    char          icon[256];
 
     force = (int *)arg;
 
-    indicator = app_indicator_new("uManage-client",
-                                  "indicator-messages",
+    getcwd(icon, sizeof(icon));
+    strcat(icon, "/clock_ind.png");
+    indicator = app_indicator_new("uManage-client", icon,
                                   APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
     app_indicator_set_status(indicator, APP_INDICATOR_STATUS_ACTIVE);
     app_indicator_set_attention_icon(indicator, "indicator-messages-new");
