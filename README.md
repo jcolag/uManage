@@ -38,6 +38,8 @@ The options are:
 
  - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
 
+ - `-t` _`format`_:  Time and date format for log entries.  Passed through directly to [`strftime()`](http://en.cppreference.com/w/c/chrono/strftime); quote if necessary.
+
 _uManageUi_ can be invoked the same way.  However, there is potential to also run it _without_ the command-line, provided the output is logged to a file, since the options can be configured and the user can exit graphically.
 
 Alternate Configuration
@@ -55,6 +57,7 @@ The following is an example `~/.uManage` file with all available options set:
     [Timing]
     idle=240
     poll=2
+    format=%c
 
 The aforementioned defaults are still in effect if they are not replaced by the file, and command-line options override the file's options.
 
@@ -88,6 +91,8 @@ Breaking that down, we have:
  - Time Used:  Time (in seconds) that the current window has been in use.
 
  - Time Idle:  Time (in seconds) that the current window has been open but idle.
+
+If, however, the time format is changed through configuration, that format replaces the first six fields.
 
 Notes
 -----
