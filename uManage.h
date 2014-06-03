@@ -15,6 +15,6 @@ struct window_state {
 void   handle_break (int);
 void   handle_alarm (int);
 void   window_state_init (struct window_state *);
-
+void   get_executable_path (char *, size_t);
 #endif
 

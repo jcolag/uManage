@@ -7,6 +7,7 @@
 #include "uoptions.h"
 
 struct program_options *progopts = NULL;
+char pathname[256];
 int *force;
 
 void activate_options (GtkMenuItem *, gpointer);
@@ -17,7 +18,7 @@ void activate_options (GtkMenuItem *menu, gpointer data) {
         /* Bogus condition to use parameters */
         ;
     }
-    open_uoptions(progopts);
+    open_uoptions(pathname, progopts);
 }
 
 void activate_quit (GtkMenuItem *menu, gpointer data) {
@@ -33,10 +34,11 @@ void stop_indicator (void) {
     activate_quit(NULL, NULL);
 }
 
-void init_indicator(int argc, char *argv[], struct program_options *options) {
+void init_indicator(int argc, char *argv[], char *path, struct program_options *options) {
+    strcpy(pathname, path);
     progopts = options;
     gtk_init(&argc, &argv);
-    load_umenu_from_file(0);
+    load_umenu_from_file(pathname, 0);
 }
 
 void *run_indicator(void *arg) {
@@ -45,7 +47,7 @@ void *run_indicator(void *arg) {
 
     force = (int *)arg;
 
-    getcwd(icon, sizeof(icon));
+    strcpy(icon, pathname);
     strcat(icon, "/clock_ind.png");
     indicator = app_indicator_new("uManage-client", icon,
                                   APP_INDICATOR_CATEGORY_APPLICATION_STATUS);

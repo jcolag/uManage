@@ -21,6 +21,7 @@ int                     poll_continue = 1;
 int main (int argc, char *argv[]) {
 #ifdef GUI
     void               *status;
+    char                path[256];
     pthread_t           thr_menu;
 #endif
 
@@ -52,7 +53,8 @@ int main (int argc, char *argv[]) {
     init_winmgmt(&opts);
     window_state_init(&current);
 #ifdef GUI
-    init_indicator(argc, argv, &opts);
+    get_executable_path(path, sizeof(path));
+    init_indicator(argc, argv, path, &opts);
     pthread_create(&thr_menu, NULL, run_indicator, &current.force);
 #endif
 
@@ -145,5 +147,25 @@ void window_state_init (struct window_state *state) {
     state->idle_accumulated = 0;
     time(&state->window_start);
     strcpy((char *)state->window_title, "");
+}
+
+void get_executable_path (char *path, size_t length) {
+    /*
+     * Please note that this routine is not entirely portable.
+     *  /proc/self/exe is specific to Linux
+     *  For FreeBSD, change to "/proc/curproc/file"
+     *  For Solaris, change to "/proc/self/path/a.out"
+     *  Others will be added as discovered, and argv[0] may be
+     *  manipulated, in some cases.
+     */
+    unsigned int index;
+
+    for(index=0;index<sizeof(path);index++) {
+        path[index] = '\000';
+    }
+    readlink("/proc/self/exe", path, length);
+    for(index = length - 1; index > 0 && path[index] != '/'; index--) {
+        path[index] = '\000';
+    }
 }
 

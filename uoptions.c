@@ -12,8 +12,8 @@ int     poll_state = 0,
 struct program_options  newest,
                        *oldest;
 
-void open_uoptions(struct program_options *orig) {
-    load_uoptions_from_file(1);
+void open_uoptions(char *path, struct program_options *orig) {
+    load_uoptions_from_file(path, 1);
     if (orig != NULL) {
         oldest = orig;
         if (oldest->poll_period > 0) {

@@ -1,4 +1,4 @@
-void open_uoptions(struct program_options *);
+void open_uoptions(char *, struct program_options *);
 void on_Poll_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data);
 void on_Idle_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data);
 void on_File_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data);
