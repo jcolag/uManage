@@ -105,6 +105,13 @@ void handle_alarm (int sig) {
         return;
     }
     signal(SIGALRM, SIG_IGN);
+
+    if (opts.pause) {
+        signal(SIGALRM, handle_alarm);
+        alarm(opts.poll_period);
+        return;
+    }
+
     idle = idle_time();
 
     if(idle < current.last_idle) {

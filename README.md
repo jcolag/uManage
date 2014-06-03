@@ -63,6 +63,13 @@ The aforementioned defaults are still in effect if they are not replaced by the 
 
 Also, as suggested earlier, _uManageUi_ can also change the configuration with a graphical interface.
 
+GUI Features
+============
+
+In addition to easier configuration and exit, _uManageUi_ also provides the following:
+
+ - _Pause_:  Suspends data collection while active.
+
 Output
 ======
 
