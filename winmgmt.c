@@ -36,7 +36,7 @@ int is_window_updated (struct window_state *state, int *poll_continue) {
 
     xdo_get_focused_window_sane(xdo, &win);
     xdo_get_window_name(xdo, win, &name, &n_len, &n_type);
-    if(strcmp(name != NULL && (char *)name, (char *)state->window_title) || state->force) {
+    if((name && strcmp((char *)name, (char *)state->window_title)) || state->force) {
         now = window_state_report(state);
         state->window_start = now;
         state->window_id = win;
