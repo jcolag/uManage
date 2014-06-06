@@ -90,7 +90,7 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
         used = 0;
     }
     /* Time,Window ID,Window Title,Time Used,Time Idle */
-    sprintf(state->csv, "%s,%08X,\"%s\",%u,%u",
+    sprintf(state->csv, "\"%s\",\"%08X\",\"%s\",%u,%u",
             tstr,
             (unsigned)state->window_id, state->window_title,
             (unsigned)used,

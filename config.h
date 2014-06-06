@@ -5,8 +5,10 @@ struct program_options {
     int             poll_period,
                     idle_threshold,     /* Treat time as idle (s) */
                     save_options,
+                    use_database,
                     pause;              /* Don't record */
     char            filename[256],
+                    dbname[256],
                     time_format[64];
 };
 

@@ -12,6 +12,7 @@
 #include "config.h"
 #include "idle.h"
 #include "indicate.h"
+#include "sqlite.h"
 
 struct window_state     current;
 struct program_options  opts;
@@ -57,6 +58,9 @@ int main (int argc, char *argv[]) {
     init_indicator(argc, argv, path, &opts);
     pthread_create(&thr_menu, NULL, run_indicator, &current.force);
 #endif
+    if (opts.use_database) {
+        open_database(opts.dbname);
+    }
 
     while(poll_continue || current.force) {
         sleep(1);                       /* Just wait for program close */
@@ -71,6 +75,9 @@ int main (int argc, char *argv[]) {
 #endif
     if (report != stdout) {
         fclose(report);
+    }
+    if (opts.use_database) {
+        close_database();
     }
     return 0;
 }
@@ -132,6 +139,9 @@ void handle_alarm (int sig) {
     }
 
     if(is_window_updated(&current, &poll_continue)) {
+        if (opts.use_database) {
+            write_to_database(current.csv, 0);
+        }
         /* Flush in case someone monitors the output file */
         fprintf(report, "%s\n", current.csv);
         fflush(report);

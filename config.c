@@ -100,8 +100,13 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
     int chOpt;              /* For getopt() */
 
     opterr = 0;
-    while((chOpt = getopt(argc, argv, "d:f:i:st:")) != -1) {
+    while((chOpt = getopt(argc, argv, "b:d:f:i:st:")) != -1) {
         switch(chOpt) {
+            case 'b':
+                opts->use_database = 1;
+                strncpy(opts->dbname, optarg, sizeof(opts->dbname));
+                strncpy(opts->time_format, "%c", sizeof(opts->time_format));
+                break;
             case 'f':
                 strncpy(opts->filename, optarg, sizeof(opts->filename));
                 break;
@@ -115,7 +120,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 opts->save_options = 1;
                 break;
             case 't':
-                strncpy(opts->time_format, optarg, sizeof(opts->time_format));
+                if (!opts->use_database) {
+                    strncpy(opts->time_format, optarg, sizeof(opts->time_format));
+                }
                 break;
             case '?':
                 if(optopt == 'f' || optopt == 'd' || optopt == 'i')
