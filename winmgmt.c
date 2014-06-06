@@ -75,7 +75,8 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
      *  state's duration.
      */
     char        tstr[64];
-    time_t     *time = instead;
+    time_t     *time = instead,
+                used;
     struct tm  *start = NULL;
 
     if (time == NULL) {
@@ -84,11 +85,15 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
 
     start = localtime(time);
     strftime(tstr, sizeof(tstr), options->time_format, start);
+    used = *duration - state->idle_accumulated;
+    if ((long)used < 0) {
+        used = 0;
+    }
     /* Time,Window ID,Window Title,Time Used,Time Idle */
     sprintf(state->csv, "%s,%08X,\"%s\",%u,%u",
             tstr,
             (unsigned)state->window_id, state->window_title,
-            (unsigned)(*duration - state->idle_accumulated),
+            (unsigned)used,
             (unsigned)state->idle_accumulated);
     return state->csv;
 }
