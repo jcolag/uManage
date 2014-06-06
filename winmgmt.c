@@ -93,7 +93,7 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
     if (quote_args) {
         sprintf(format_string, "\"%%s\",\"%%08X\",\"%%s\",%%u,%%u");
     } else {
-        sprintf(format_string, "%%s,%%08X,%%s,%%u,%%u");
+        sprintf(format_string, "%%s,%%08X,\"%%s\",%%u,%%u");
     }
     /* Time,Window ID,Window Title,Time Used,Time Idle */
     sprintf(state->csv, format_string,
