@@ -14,7 +14,7 @@ void init_winmgmt(struct program_options *progopts) {
     options = progopts;
 }
 
-int is_window_updated (struct window_state *state, int *poll_continue) {
+int is_window_updated (struct window_state *state, int *poll_continue, int quote_args) {
     /*
      *  Grab the focused window's ID and title
      *  If it's a new title, better to keep track of file saves than not,
@@ -37,7 +37,7 @@ int is_window_updated (struct window_state *state, int *poll_continue) {
     xdo_get_focused_window_sane(xdo, &win);
     xdo_get_window_name(xdo, win, &name, &n_len, &n_type);
     if((name && strcmp((char *)name, (char *)state->window_title)) || state->force) {
-        now = window_state_report(state);
+        now = window_state_report(state, quote_args);
         state->window_start = now;
         state->window_id = win;
         strcpy((char *)state->window_title, (char *)name);
@@ -52,7 +52,7 @@ int is_window_updated (struct window_state *state, int *poll_continue) {
     return 0;
 }
 
-time_t window_state_report (struct window_state *state) {
+time_t window_state_report (struct window_state *state, int quote_args) {
     /*
      *  Get the duration the most recent window has been used and
      *  retrieve the relevant CSV.
@@ -63,18 +63,19 @@ time_t window_state_report (struct window_state *state) {
     time(&window_end);
     window_dur = window_end - state->window_start;
 
-    window_state_format(state, NULL, &window_dur);
+    window_state_format(state, NULL, &window_dur, quote_args);
     return window_end;
 }
 
-char * window_state_format (struct window_state *state, time_t *instead, time_t *duration) {
+char * window_state_format (struct window_state *state, time_t *instead, time_t *duration, int quote_args) {
     /*
      *  Create the CSV line inside the window state, ready for printing.
      *
      *  If the caller set the instead parameter, use it instead of the
      *  state's duration.
      */
-    char        tstr[64];
+    char        tstr[64],
+                format_string[64];
     time_t     *time = instead,
                 used;
     struct tm  *start = NULL;
@@ -89,8 +90,13 @@ char * window_state_format (struct window_state *state, time_t *instead, time_t 
     if ((long)used < 0) {
         used = 0;
     }
+    if (quote_args) {
+        sprintf(format_string, "\"%%s\",\"%%08X\",\"%%s\",%%u,%%u");
+    } else {
+        sprintf(format_string, "%%s,%%08X,%%s,%%u,%%u");
+    }
     /* Time,Window ID,Window Title,Time Used,Time Idle */
-    sprintf(state->csv, "\"%s\",\"%08X\",\"%s\",%u,%u",
+    sprintf(state->csv, format_string,
             tstr,
             (unsigned)state->window_id, state->window_title,
             (unsigned)used,

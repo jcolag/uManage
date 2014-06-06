@@ -138,7 +138,7 @@ void handle_alarm (int sig) {
         }
     }
 
-    if(is_window_updated(&current, &poll_continue)) {
+    if(is_window_updated(&current, &poll_continue, opts.use_database)) {
         if (opts.use_database) {
             write_to_database(current.csv, 0);
         }
