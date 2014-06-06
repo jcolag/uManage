@@ -30,6 +30,8 @@ Run _uManage_ from the command line (for now) as follows:
 
 The options are:
 
+ - `-b` _`database`_:  Name of an SQLite3 database file, which _uManage_ will create, if it doesn't already exist.  __Note__ that _uManage_ will automatically set the _time format_ (see `-t`, below) to `%c` and block attempts to change the format.  Items in the CSV will also be quoted (including the entire date, regardless of format) for compatability with the database.
+
  - `-d` _`delay`_:  Delay (in seconds) between looks at the current window.  The default is one second (1s).
 
  - `-f` _`filename`_:  The name of the file to log timing information.  If no file is specified, the program directs output to `stdout`.
