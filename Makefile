@@ -5,9 +5,10 @@ CC=gcc
 RM=rm
 GLUE=GladeGlue.rb
 CFLAGS=-Wall -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition -rdynamic
-CFLAGS+=`pkg-config --cflags glib-2.0 gtk+-3.0 appindicator3-0.1 sqlite3` -g
+LIBS=glib-2.0 gtk+-3.0 appindicator3-0.1 sqlite3
+CFLAGS+=`pkg-config --cflags $(LIBS)` -g
 LIBFLAGS=-lxdo -lX11 -lXss -lxcb -lxcb-screensaver -lpthread
-LIBFLAGS+=`pkg-config --libs glib-2.0 gtk+-3.0 appindicator3-0.1 sqlite3`
+LIBFLAGS+=`pkg-config --libs $(LIBS)`
 DBGFLAGS=-g
 
 all: uManage uManageUi
