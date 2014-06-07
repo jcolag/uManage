@@ -124,11 +124,11 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 strncpy(opts->dbname, optarg, sizeof(opts->dbname));
                 strncpy(opts->time_format, "%c", sizeof(opts->time_format));
                 break;
-            case 'f':
-                strncpy(opts->filename, optarg, sizeof(opts->filename));
-                break;
             case 'd':
                 opts->poll_period = atoi(optarg);
+                break;
+            case 'f':
+                strncpy(opts->filename, optarg, sizeof(opts->filename));
                 break;
             case 'i':
                 opts->idle_threshold = atoi(optarg);
@@ -153,6 +153,14 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 else
                     fprintf(stderr, "Unknown option character `\\x%x'.\n",
                             optopt);
+                fprintf(stderr, "%s ", argv[0]);
+                fprintf(stderr, "[-b database] ");
+                fprintf(stderr, "[-d period] ");
+                fprintf(stderr, "[-f file.csv] ");
+                fprintf(stderr, "[-i idle] ");
+                fprintf(stderr, "[-n] ");
+                fprintf(stderr, "[-s] ");
+                fprintf(stderr, "[-t format]\n\n");
                 return 1;
             default:
                 return 2;
