@@ -6,6 +6,7 @@ struct program_options {
                     idle_threshold,     /* Treat time as idle (s) */
                     save_options,
                     use_database,
+                    text_out,           /* Print to console or file */
                     pause;              /* Don't record */
     char            filename[256],
                     dbname[256],

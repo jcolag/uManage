@@ -26,6 +26,7 @@ int get_configuration (struct program_options *opts) {
     opts->poll_period = 1;
     opts->idle_threshold = 180;
     opts->save_options = 0;
+    opts->text_out = 1;
 
     /* Preserve non-settings if we mess with anything */
     keyfile = g_key_file_new ();
@@ -57,7 +58,12 @@ int get_configuration (struct program_options *opts) {
     t_str = g_key_file_get_string(keyfile, "File", "database", NULL);
     if (t_str != NULL) {
         opts->use_database = 1;
+        strcpy(opts->time_format, "%c");
         strcpy(opts->dbname, t_str);
+    }
+    t_int = g_key_file_get_integer(keyfile, "File", "notext", NULL);
+    if (t_int != 0) {
+        opts->text_out = !t_int;
     }
     return 1;
 }
@@ -96,6 +102,9 @@ int save_configuration (struct program_options *opts) {
     if (opts->use_database != 0) {
         g_key_file_set_string(keyfile, "File", "database", opts->dbname);
     }
+    if (opts->text_out != 0) {
+        g_key_file_set_integer(keyfile, "File", "notext", !opts->text_out);
+    }
     if (!g_key_file_save_to_file(keyfile, keyfilename, NULL)) {
         fprintf(stderr, "Cannot save configuration to %s:  %s\n",
                 keyfilename, error->message);
@@ -108,7 +117,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
     int chOpt;              /* For getopt() */
 
     opterr = 0;
-    while((chOpt = getopt(argc, argv, "b:d:f:i:st:")) != -1) {
+    while((chOpt = getopt(argc, argv, "b:d:f:i:nst:")) != -1) {
         switch(chOpt) {
             case 'b':
                 opts->use_database = 1;
@@ -123,6 +132,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 break;
             case 'i':
                 opts->idle_threshold = atoi(optarg);
+                break;
+            case 'n':
+                opts->text_out = 0;
                 break;
             case 's':
                 opts->save_options = 1;

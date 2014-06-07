@@ -45,9 +45,11 @@ int main (int argc, char *argv[]) {
         save_configuration(&opts);
     }
 
-    report = fopen(opts.filename, "a");
-    if(report == NULL) {
-        report = stdout;
+    if (opts.text_out) {
+        report = fopen(opts.filename, "a");
+        if(report == NULL) {
+            report = stdout;
+        }
     }
 
     init_idle();
@@ -73,7 +75,7 @@ int main (int argc, char *argv[]) {
 #ifdef GUI
     pthread_join(thr_menu, &status);
 #endif
-    if (report != stdout) {
+    if (report != stdout && opts.text_out) {
         fclose(report);
     }
     if (opts.use_database) {
@@ -142,9 +144,11 @@ void handle_alarm (int sig) {
         if (opts.use_database) {
             write_to_database(current.csv, 0);
         }
-        /* Flush in case someone monitors the output file */
-        fprintf(report, "%s\n", current.csv);
-        fflush(report);
+        if (opts.text_out) {
+            /* Flush in case someone monitors the output file */
+            fprintf(report, "%s\n", current.csv);
+            fflush(report);
+        }
     }
     /* Reset this, so that we don't have problems exiting */
     current.force = 0;
