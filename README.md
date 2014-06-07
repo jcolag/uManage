@@ -54,7 +54,8 @@ For obvious reasons, there is no equivalent to `-s`.
 The following is an example `~/.uManage` file with all available options set:
 
     [File]
-    log=~/logs/useractivity.csv
+    log=/home/you/logs/useractivity.csv
+    database=/home/you/logs/useractivity.db
     
     [Timing]
     idle=240
@@ -75,7 +76,7 @@ In addition to easier configuration and exit, _uManageUi_ also provides the foll
 Output
 ======
 
-_uManage_ generates data as comma-separated values (CSV), formatted as:
+_uManage_ generates data as comma-separated values (CSV), by default formatted as:
 
     YYYY,MM,DD,HH,MM,SS,Window ID,Window Title,Time Used,Time Idle
 
@@ -95,7 +96,7 @@ Breaking that down, we have:
 
  - Window ID:  An eight digit hexadecimal value representing the window that currently has focus, such as __0520008D__.
 
- - Window Title:  Title of the window that currently has focus, such as __*README.md (~/Documents/code/uManage) - gedit__.
+ - Window Title:  Title of the window that currently has focus, such as __*README.md (~/Documents/code/uManage.c) - gedit__.
 
  - Time Used:  Time (in seconds) that the current window has been in use.
 

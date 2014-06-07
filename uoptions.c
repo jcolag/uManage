@@ -7,6 +7,7 @@
 int     poll_state = 0,
         idle_state = 0,
         file_state = 0,
+        db_state = 0,
         tfmt_state = 0;
 
 struct program_options  newest,
@@ -31,6 +32,12 @@ void open_uoptions(char *path, struct program_options *orig) {
         if (strcmp(oldest->filename, "")) {
             gtk_switch_set_active(uoptions_File_Switch, 1);
             gtk_entry_set_text(uoptions_File_Input, oldest->filename);
+        }
+        if (oldest->use_database) {
+            gtk_switch_set_active(uoptions_Db_Switch, 1);
+        }
+        if (strcmp(oldest->dbname, "")) {
+            gtk_entry_set_text(uoptions_Db_Input, oldest->dbname);
         }
     }
     gtk_widget_show_all((GtkWidget*)GTK_WINDOW(uoptions_uManage_Options));
@@ -69,6 +76,18 @@ void on_File_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) 
     file_state = onSw;
 }
 
+void on_Db_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_Db_Input, onSw);
+    db_state = onSw;
+    newest.use_database = 1;
+}
+
 void on_TFmt_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
     gboolean onSw;
     if (button == NULL && user_data == NULL) {
@@ -102,6 +121,14 @@ void on_File_Input_changed (GtkEntry *entry, gpointer user_data) {
         ;
     }
     strcpy(newest.filename, gtk_entry_get_text(entry));
+}
+
+void on_Db_Input_changed (GtkEntry *entry, gpointer user_data) {
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    strcpy(newest.dbname, gtk_entry_get_text(entry));
 }
 
 void on_TFmt_Input_changed (GtkEntry *entry, gpointer user_data) {

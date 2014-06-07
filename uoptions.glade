@@ -157,20 +157,20 @@
           </object>
           <packing>
             <property name="left_attach">2</property>
-            <property name="top_attach">4</property>
+            <property name="top_attach">5</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkSwitch" id="TFmt_Switch">
+          <object class="GtkLabel" id="TFmt_Label">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <signal name="state-flags-changed" handler="on_TFmt_Switch_state_flags_changed" swapped="no"/>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Time Format</property>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
+            <property name="left_attach">2</property>
+            <property name="top_attach">4</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
@@ -184,16 +184,56 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
+            <property name="top_attach">4</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="TFmt_Switch">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <signal name="state-flags-changed" handler="on_TFmt_Switch_state_flags_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">4</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="Db_Switch">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <signal name="state-flags-changed" handler="on_Db_Switch_state_flags_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
             <property name="top_attach">3</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="TFmt_Label">
+          <object class="GtkEntry" id="Db_Input">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <signal name="changed" handler="on_Db_Input_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">3</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="Db_Label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Time Format</property>
+            <property name="label" translatable="yes">Database File</property>
           </object>
           <packing>
             <property name="left_attach">2</property>

@@ -54,6 +54,11 @@ int get_configuration (struct program_options *opts) {
     if (t_str != NULL) {
         strcpy(opts->filename, t_str);
     }
+    t_str = g_key_file_get_string(keyfile, "File", "database", NULL);
+    if (t_str != NULL) {
+        opts->use_database = 1;
+        strcpy(opts->dbname, t_str);
+    }
     return 1;
 }
 
@@ -87,6 +92,9 @@ int save_configuration (struct program_options *opts) {
     }
     if (strcmp(opts->filename, "")) {
         g_key_file_set_string(keyfile, "File", "log", opts->filename);
+    }
+    if (opts->use_database != 0) {
+        g_key_file_set_string(keyfile, "File", "database", opts->dbname);
     }
     if (!g_key_file_save_to_file(keyfile, keyfilename, NULL)) {
         fprintf(stderr, "Cannot save configuration to %s:  %s\n",
