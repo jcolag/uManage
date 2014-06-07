@@ -11,7 +11,10 @@ int open_database(char *name) {
          *error;
     int status = 0;
 
+    /* Stash the database name in case we need to re-open */
     strcpy(database_name, name);
+
+    /* Open the file and make sure the table exists */
     status = sqlite3_open(database_name, &sql);
     if (status) {
         return status;
@@ -25,6 +28,11 @@ int write_to_database(char *insert, int cycle) {
             query[512];
     int     status = 0;
 
+    /*
+     * Insert a database row.
+     * If cycle is non-zero, open (if needed) the database
+     * and close when done.
+     */
     if (cycle && sql == NULL) {
         open_database(database_name);
     }

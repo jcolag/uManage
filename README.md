@@ -38,6 +38,8 @@ The options are:
 
  - `-i` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
 
+ - `-n`:  Block console/file output.
+
  - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
 
  - `-t` _`format`_:  Time and date format for log entries.  Passed through directly to [`strftime()`](http://en.cppreference.com/w/c/chrono/strftime); quote if necessary.
@@ -56,6 +58,7 @@ The following is an example `~/.uManage` file with all available options set:
     [File]
     log=/home/you/logs/useractivity.csv
     database=/home/you/logs/useractivity.db
+    notext=1
     
     [Timing]
     idle=240
@@ -65,6 +68,8 @@ The following is an example `~/.uManage` file with all available options set:
 The aforementioned defaults are still in effect if they are not replaced by the file, and command-line options override the file's options.
 
 Also, as suggested earlier, _uManageUi_ can also change the configuration with a graphical interface.
+
+Note that `log` is unused if `notext` is set.
 
 GUI Features
 ============
@@ -104,6 +109,25 @@ Breaking that down, we have:
 
 If, however, the time format is changed through configuration, that format replaces the first six fields.
 
+Database
+--------
+
+_uManage_ will also log to an SQLite database (see the `-b` command-line option and the `[File]`/`database` configuration described above), which has similar fields except for the date, which is a single field by default in C's `%c` format.
+
+The table for this data is named `activity`, and has the following fields:
+
+ - `start`, a `text` field.  Again, in `%c` format unless configured to do something different in the graphical options interface.
+
+ - `window`, the Window ID, also `text`.  Technically, since it's an eight-digit hexadecimal number, it could obviously be an integer, but it's doubtful that anybody could rationally use it _as_ a number.
+
+ - `title`, obviously `text`, storing the Window Title.
+
+ - `used`, the Time Used, as an `integer`, in seconds.
+
+ - `idle`, the Time Idle, as an `integer`, in seconds.
+
+The difference in date format, of course, reflects SQLite's [Date and Time API](https://www.sqlite.org/lang_datefunc.html).
+
 Notes
 -----
 
@@ -118,7 +142,7 @@ I should also note that `umenu.glade` is _not_ a Glade-produced file.  Or, rathe
 Name
 ====
 
-Think of __uManage__ as "micro-manage"---the 'u' is close enough to a Greek _mu_---which is either a pun or accurate, depending on how you use it.
+Think of __uManage__ as "micro-manage"---the 'u' is close enough to a Greek _mu_/&mu;---which is either a pun or accurate, depending on how you use it.
 
 Or think of it as "You Manage," since you can, indeed, do that.
 
@@ -137,15 +161,19 @@ We'll also need to know what window we're looking at, and [xdotool](http://www.s
 
     sudo apt-get install libxdo-dev
 
-Glib provides its "key-value file parser" to manage the configuration file.
+Glib provides its [key-value file parser](https://developer.gnome.org/glib/unstable/glib-Key-value-file-parser.html) to manage the configuration file.
 
     sudo apt-get install libglib2.0-dev
 
-The graphical interface is handled with GTK+.
+Database support is [SQLite](https://www.sqlite.org/).
+
+    sudo apt-get install libsqlite3-dev
+
+The graphical interface is handled with [GTK+](https://developer.gnome.org/gtk3/).
 
     sudo apt-get install libgtk-3-dev
 
-The application menu also uses the Application Indicator library.
+The application menu also uses the [Application Indicator](https://wiki.ubuntu.com/DesktopExperienceTeam/ApplicationIndicators) library.
 
     sudo apt-get install appindicator-dev
 
