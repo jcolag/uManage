@@ -26,23 +26,23 @@ Usage
 
 Run _uManage_ from the command line (for now) as follows:
 
-    uManage [-d loop_delay] [-f log_file] [-i idle_threshold] [-s]
+    uManage [-b database] [-d loop_delay] [-f log_file] [-i idle_threshold] [-s] [-t time_format]
 
 The options are:
 
- - `-b` _`database`_:  Name of an SQLite3 database file, which _uManage_ will create, if it doesn't already exist.  __Note__ that _uManage_ will automatically set the _time format_ (see `-t`, below) to `%Y-%m-%dT%T%z` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601), which is required for SQLite's date and time functions) and block attempts to change the format.  Items in the CSV will also be quoted (including the entire date, regardless of format) for compatability with the database.
+ - `-b`/`--database` _`database`_:  Name of an SQLite3 database file, which _uManage_ will create, if it doesn't already exist.  __Note__ that _uManage_ will automatically set the _time format_ (see `-t`, below) to `%Y-%m-%dT%T%z` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601), which is required for SQLite's date and time functions) and block attempts to change the format.  Items in the CSV will also be quoted (including the entire date, regardless of format) for compatability with the database.
 
- - `-d` _`delay`_:  Delay (in seconds) between looks at the current window.  The default is one second (1s).
+ - `-d`/`--delay` _`delay`_:  Delay (in seconds) between looks at the current window.  The default is one second (1s).
 
- - `-f` _`filename`_:  The name of the file to log timing information.  If no file is specified, the program directs output to `stdout`.
+ - `-f`/`--filename` _`filename`_:  The name of the file to log timing information.  If no file is specified, the program directs output to `stdout`.
 
- - `-i` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
+ - `-i`/`--idle` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
 
- - `-n`:  Block console/file output.
+ - `-n`/`--no-output`:  Block console/file output.
 
- - `-s`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
+ - `-s`/`--save`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
 
- - `-t` _`format`_:  Time and date format for log entries.  Passed through directly to [`strftime()`](http://en.cppreference.com/w/c/chrono/strftime); quote if necessary.
+ - `-t`/`--time-format` _`format`_:  Time and date format for log entries.  Passed through directly to [`strftime()`](http://en.cppreference.com/w/c/chrono/strftime); quote if necessary.
 
 _uManageUi_ can be invoked the same way.  However, there is potential to also run it _without_ the command-line, provided the output is logged to a file, since the options can be configured and the user can exit graphically.
 
