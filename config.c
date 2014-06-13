@@ -114,10 +114,22 @@ int save_configuration (struct program_options *opts) {
 }
 
 int parse_options (int argc, char **argv, struct program_options *opts) {
-    int chOpt;              /* For getopt() */
+    int chOpt,              /* For getopt() */
+        optIndex = 0;
+    static struct option long_options[] = {
+        { "database",    required_argument, NULL, 'b' },
+        { "delay",       required_argument, NULL, 'd' },
+        { "filename",    required_argument, NULL, 'f' },
+        { "idle",        required_argument, NULL, 'i' },
+        { "no-output",   no_argument,       NULL, 'n' },
+        { "save",        no_argument,       NULL, 's' },
+        { "time-format", required_argument, NULL, 't' },
+        { NULL,          0,                 NULL, 0 }
+    };
 
     opterr = 0;
-    while((chOpt = getopt(argc, argv, "b:d:f:i:nst:")) != -1) {
+    while((chOpt = getopt_long(argc, argv, "b:d:f:i:nst:",
+            long_options, &optIndex)) != -1) {
         switch(chOpt) {
             case 'b':
                 opts->use_database = 1;
