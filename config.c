@@ -58,7 +58,7 @@ int get_configuration (struct program_options *opts) {
     t_str = g_key_file_get_string(keyfile, "File", "database", NULL);
     if (t_str != NULL) {
         opts->use_database = 1;
-        strcpy(opts->time_format, "%Y-%m-%dT%T%z");
+        strcpy(opts->time_format, "%Y-%m-%dT%T");
         strcpy(opts->dbname, t_str);
     }
     t_int = g_key_file_get_integer(keyfile, "File", "notext", NULL);
@@ -134,7 +134,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
             case 'b':
                 opts->use_database = 1;
                 strncpy(opts->dbname, optarg, sizeof(opts->dbname));
-                strncpy(opts->time_format, "%Y-%m-%dT%T%z", sizeof(opts->time_format));
+                strncpy(opts->time_format, "%Y-%m-%dT%T", sizeof(opts->time_format));
                 break;
             case 'd':
                 opts->poll_period = atoi(optarg);
