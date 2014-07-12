@@ -21,11 +21,13 @@
 *.i*86
 *.x86_64
 *.hex
+uManage
+uManageUi
 
 # Editor droppings
 *~
 
-# Executables
-uManage
-uManageUi
+# GladeGlue
+*_glade.?
+
 
