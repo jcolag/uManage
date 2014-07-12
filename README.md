@@ -78,6 +78,8 @@ In addition to easier configuration and exit, _uManageUi_ also provides the foll
 
  - _Pause_:  Suspends data collection while active.
 
+ - _Jiggle Mouse_:  Moves the mouse back and forth regularly to simulate activity.  Configuration to be added soon.
+
 Output
 ======
 
