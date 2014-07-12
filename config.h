@@ -3,6 +3,7 @@
 
 struct program_options {
     int             poll_period,
+                    mouse_period,       /* Move mouse every (s) */
                     idle_threshold,     /* Treat time as idle (s) */
                     save_options,
                     use_database,

@@ -13,6 +13,7 @@
 #include "idle.h"
 #include "indicate.h"
 #include "sqlite.h"
+#include "mouse.h"
 
 struct window_state     current;
 struct program_options  opts;
@@ -140,6 +141,18 @@ void handle_alarm (int sig) {
         }
     }
 
+#ifdef GUI
+    if(opts.mouse_period > 0) {
+        /* We need to worry about jiggling the mouse */
+        if(current.last_jiggle == 0) {
+            time(&current.last_jiggle);
+        } else if (current.last_jiggle / (opts.mouse_period * 1000) > 0) {
+            move_mouse();
+            current.last_jiggle = 0;
+        }
+    }
+#endif
+
     if(is_window_updated(&current, &poll_continue, opts.use_database)) {
         if (opts.use_database) {
             write_to_database(current.csv, 0);
@@ -163,6 +176,7 @@ void handle_alarm (int sig) {
 
 void window_state_init (struct window_state *state) {
     state->force = 0;
+    state->last_jiggle = 0;
     state->last_idle = (unsigned long)(-1);
     state->idle_start = 0;
     state->idle_accumulated = 0;

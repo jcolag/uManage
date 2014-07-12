@@ -8,7 +8,8 @@ struct window_state {
     unsigned char   window_title[512];
     time_t          window_start,       /* Use of window started at (s) */
                     idle_start,         /* Idle started at (s) */
-                    idle_accumulated;   /* Idle with window focus (s) */
+                    idle_accumulated,   /* Idle with window focus (s) */
+                    last_jiggle;        /* Start of the last mouse move */
     char            csv[1024];          /* For reporting - output only */
 };
 

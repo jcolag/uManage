@@ -1,6 +1,6 @@
 NAME=uManage
 SOURCES=$(NAME).c config.c idle.c winmgmt.c sqlite.c
-UISOURCES=$(SOURCES) indicate.c uoptions.c
+UISOURCES=$(SOURCES) indicate.c uoptions.c mouse.c
 CC=gcc
 RM=rm
 GLUE=GladeGlue.rb
