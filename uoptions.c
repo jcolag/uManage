@@ -6,6 +6,7 @@
 
 int     poll_state = 0,
         idle_state = 0,
+        jiggle_state = 0,
         file_state = 0,
         db_state = 0,
         tfmt_state = 0;
@@ -20,6 +21,10 @@ void open_uoptions(char *path, struct program_options *orig) {
         if (oldest->poll_period > 0) {
             gtk_switch_set_active(uoptions_Poll_Switch, 1);
             gtk_spin_button_set_value(uoptions_Poll_Input, oldest->poll_period);
+        }
+        if (oldest->mouse_period > 0) {
+            gtk_switch_set_active(uoptions_Jiggle_Switch, 1);
+            gtk_spin_button_set_value(uoptions_Jiggle_Input, oldest->mouse_period);
         }
         if (oldest->idle_threshold > 0) {
             gtk_switch_set_active(uoptions_Idle_Switch, 1);
@@ -52,6 +57,17 @@ void on_Poll_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) 
     onSw = gtk_switch_get_active(button);
     gtk_widget_set_sensitive ((GtkWidget *)uoptions_Poll_Input, onSw);
     poll_state = onSw;
+}
+
+void on_Jiggle_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_Jiggle_Input, onSw);
+    jiggle_state = onSw;
 }
 
 void on_Idle_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
@@ -107,6 +123,14 @@ void on_Poll_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data)
     newest.poll_period = gtk_spin_button_get_value_as_int(spinbutton);
 }
 
+void on_Jiggle_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data) {
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    newest.mouse_period = gtk_spin_button_get_value_as_int(spinbutton);
+}
+
 void on_Idle_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data) {
     if (user_data == NULL) {
         /* Bogus condition to use parameters */
@@ -149,6 +173,9 @@ void on_Save_Button_clicked (GtkButton *button, gpointer user_data) {
     }
     if (poll_state) {
         oldest->poll_period = newest.poll_period;
+    }
+    if (jiggle_state) {
+        oldest->mouse_period = newest.mouse_period;
     }
     if (idle_state) {
         oldest->idle_threshold = newest.idle_threshold;

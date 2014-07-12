@@ -7,6 +7,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="jiggle_value">
+    <property name="upper">600</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">30</property>
+  </object>
   <object class="GtkAdjustment" id="poll_value">
     <property name="upper">600</property>
     <property name="step_increment">1</property>
@@ -148,21 +153,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="Save_Button">
-            <property name="label" translatable="yes">Save Options</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="on_Save_Button_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">5</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="TFmt_Label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -238,6 +228,65 @@
           <packing>
             <property name="left_attach">2</property>
             <property name="top_attach">3</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Save_Button">
+            <property name="label" translatable="yes">Save Options</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_Save_Button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">6</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="Jiggle_Switch">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <signal name="state-flags-changed" handler="on_Jiggle_Switch_state_flags_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">5</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="Jiggle_Input">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">0</property>
+            <property name="input_purpose">digits</property>
+            <property name="adjustment">jiggle_value</property>
+            <property name="numeric">True</property>
+            <signal name="value-changed" handler="on_Poll_Input_value_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">5</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="Jiggle_Label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Mouse Move Frequency (s)</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">5</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
