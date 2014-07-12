@@ -12,6 +12,7 @@ int *force;
 
 void activate_options (GtkMenuItem *, gpointer);
 void activate_pause (GtkCheckMenuItem *, gpointer);
+void activate_jiggle (GtkCheckMenuItem *, gpointer);
 void activate_quit (GtkMenuItem *, gpointer);
 
 void activate_options (GtkMenuItem *menu, gpointer data) {
@@ -31,6 +32,17 @@ void activate_pause (GtkCheckMenuItem *menu, gpointer data) {
     }
     pause = gtk_check_menu_item_get_active(menu);
     progopts->pause = pause ? 1 : 0;
+}
+
+void activate_jiggle (GtkCheckMenuItem *menu, gpointer data) {
+    gboolean pause;
+
+    if (data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    pause = gtk_check_menu_item_get_active(menu);
+    progopts->mouse_period = pause ? 1 : 0;
 }
 
 void activate_quit (GtkMenuItem *menu, gpointer data) {
@@ -71,6 +83,7 @@ void *run_indicator(void *arg) {
     g_signal_connect(umenu_Menu_Quit, "activate", G_CALLBACK(activate_quit), NULL);
     g_signal_connect(umenu_Menu_Opts, "activate", G_CALLBACK(activate_options), NULL);
     g_signal_connect(umenu_Menu_Pause, "toggled", G_CALLBACK(activate_pause), NULL);
+    g_signal_connect(umenu_Menu_Jiggle, "toggled", G_CALLBACK(activate_jiggle), NULL);
 
     gtk_main ();
     return arg;
