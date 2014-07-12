@@ -142,11 +142,12 @@ void handle_alarm (int sig) {
     }
 
 #ifdef GUI
-    if(opts.mouse_period > 0) {
+    if(opts.jiggle != 0) {
+        time(&idle_dur);
         /* We need to worry about jiggling the mouse */
         if(current.last_jiggle == 0) {
             time(&current.last_jiggle);
-        } else if (current.last_jiggle / (opts.mouse_period * 1000) > 0) {
+        } else if ((idle_dur - current.last_jiggle) / opts.mouse_period > 0) {
             move_mouse();
             current.last_jiggle = 0;
         }
