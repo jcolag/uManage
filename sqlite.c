@@ -7,7 +7,7 @@ char        database_name[256];
 sqlite3    *sql = NULL;
 
 int open_database(char *name) {
-    char *create = "CREATE TABLE IF NOT EXISTS activity (start TEXT, window TEXT, title TEXT, used INTEGER, idle INTEGER);",
+    char *activity = "CREATE TABLE IF NOT EXISTS activity (start TEXT, window TEXT, title TEXT, used INTEGER, idle INTEGER);",
          *error;
     int status = 0;
 
@@ -19,11 +19,11 @@ int open_database(char *name) {
     if (status) {
         return status;
     }
-    status = sqlite3_exec(sql, create, NULL, NULL, &error);
+    status = sqlite3_exec(sql, activity, NULL, NULL, &error);
     return status;
 }
 
-int write_to_database(char *insert, int cycle) {
+int write_activity_to_database(char *insert, int cycle) {
     char   *error,
             query[512];
     int     status = 0;

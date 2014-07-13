@@ -156,7 +156,7 @@ void handle_alarm (int sig) {
 
     if(is_window_updated(&current, &poll_continue, opts.use_database)) {
         if (opts.use_database) {
-            write_to_database(current.csv, 0);
+            write_activity_to_database(current.csv, 0);
         }
         if (opts.text_out) {
             /* Flush in case someone monitors the output file */

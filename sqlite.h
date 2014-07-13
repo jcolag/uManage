@@ -2,7 +2,7 @@
 #define SQLITE__H
 
 int open_database(char *);
-int write_to_database(char *, int);
+int write_activity_to_database(char *, int);
 void close_database(void);
 
 #endif
