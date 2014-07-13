@@ -3,12 +3,13 @@
 
 struct program_options {
     int             poll_period,
-                    mouse_period,       /* Move mouse every (s) */
+                    mouse_period,       /* Move mouse every (s) if on */
                     idle_threshold,     /* Treat time as idle (s) */
                     save_options,
                     use_database,
                     text_out,           /* Print to console or file */
-                    pause;              /* Don't record */
+                    pause,              /* Don't record */
+                    jiggle;             /* Move mouse */
     char            filename[256],
                     dbname[256],
                     time_format[64];

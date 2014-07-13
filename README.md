@@ -38,6 +38,8 @@ The options are:
 
  - `-i`/`--idle` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
 
+ - `-j`/`--jiggle` _`delay`_:  Time (in seconds) between automatic mouse movements, if active.
+
  - `-n`/`--no-output`:  Block console/file output.
 
  - `-s`/`--save`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
@@ -64,6 +66,7 @@ The following is an example `~/.uManage` file with all available options set:
     idle=240
     poll=2
     format=%c
+    jiggle=23
 
 The aforementioned defaults are still in effect if they are not replaced by the file, and command-line options override the file's options.
 
@@ -78,7 +81,7 @@ In addition to easier configuration and exit, _uManageUi_ also provides the foll
 
  - _Pause_:  Suspends data collection while active.
 
- - _Jiggle Mouse_:  Moves the mouse back and forth regularly to simulate activity.  Configuration to be added soon.
+ - _Jiggle Mouse_:  Moves the mouse back and forth regularly to simulate input activity.
 
 Output
 ======

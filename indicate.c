@@ -35,14 +35,14 @@ void activate_pause (GtkCheckMenuItem *menu, gpointer data) {
 }
 
 void activate_jiggle (GtkCheckMenuItem *menu, gpointer data) {
-    gboolean pause;
+    gboolean jiggle;
 
     if (data == NULL) {
         /* Bogus condition to use parameters */
         ;
     }
-    pause = gtk_check_menu_item_get_active(menu);
-    progopts->mouse_period = pause ? 1 : 0;
+    jiggle = gtk_check_menu_item_get_active(menu);
+    progopts->jiggle = jiggle ? 1 : 0;
 }
 
 void activate_quit (GtkMenuItem *menu, gpointer data) {

@@ -43,6 +43,10 @@ int get_configuration (struct program_options *opts) {
     if (t_int != 0) {
         opts->poll_period = t_int;
     }
+    t_int = g_key_file_get_integer(keyfile, "Timing", "jiggle", NULL);
+    if (t_int != 0) {
+        opts->mouse_period = t_int;
+    }
     t_int = g_key_file_get_integer(keyfile, "Timing", "idle", NULL);
     if (t_int != 0) {
         opts->idle_threshold = t_int;
@@ -90,6 +94,9 @@ int save_configuration (struct program_options *opts) {
     if (opts->poll_period != 0) {
         g_key_file_set_integer(keyfile, "Timing", "poll", opts->poll_period);
     }
+    if (opts->poll_period != 0) {
+        g_key_file_set_integer(keyfile, "Timing", "jiggle", opts->mouse_period);
+    }
     if (opts->idle_threshold != 0) {
         g_key_file_set_integer(keyfile, "Timing", "idle", opts->idle_threshold);
     }
@@ -121,6 +128,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
         { "delay",       required_argument, NULL, 'd' },
         { "filename",    required_argument, NULL, 'f' },
         { "idle",        required_argument, NULL, 'i' },
+        { "jiggle",      required_argument, NULL, 'j' },
         { "no-output",   no_argument,       NULL, 'n' },
         { "save",        no_argument,       NULL, 's' },
         { "time-format", required_argument, NULL, 't' },
@@ -128,7 +136,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
     };
 
     opterr = 0;
-    while((chOpt = getopt_long(argc, argv, "b:d:f:i:nst:",
+    while((chOpt = getopt_long(argc, argv, "b:d:f:i:j:nst:",
             long_options, &optIndex)) != -1) {
         switch(chOpt) {
             case 'b':
@@ -144,6 +152,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 break;
             case 'i':
                 opts->idle_threshold = atoi(optarg);
+                break;
+            case 'j':
+                opts->mouse_period = atoi(optarg);
                 break;
             case 'n':
                 opts->text_out = 0;
@@ -170,6 +181,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 fprintf(stderr, "[-d period] ");
                 fprintf(stderr, "[-f file.csv] ");
                 fprintf(stderr, "[-i idle] ");
+                fprintf(stderr, "[-j period] ");
                 fprintf(stderr, "[-n] ");
                 fprintf(stderr, "[-s] ");
                 fprintf(stderr, "[-t format]\n\n");
