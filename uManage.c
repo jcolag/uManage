@@ -117,6 +117,9 @@ void handle_alarm (int sig) {
     signal(SIGALRM, SIG_IGN);
 
     if (opts.pause) {
+        if (current.pause_since == 0) {
+            time(&current.pause_since);
+        }
         signal(SIGALRM, handle_alarm);
         alarm(opts.poll_period);
         return;
@@ -152,6 +155,23 @@ void handle_alarm (int sig) {
             current.last_jiggle = 0;
         }
     }
+
+    if (current.jiggle_since == 0 && opts.jiggle != 0) {
+        /* Feature turned on, needs to be tracked */
+        time(&current.jiggle_since);
+    } else if (current.jiggle_since != 0 && opts.jiggle == 0) {
+        /* Feature turned off, emit duration */
+        time(&idle_dur);
+        report_duration(current.csv, opts.time_format, &current.jiggle_since, &idle_dur);
+        current.jiggle_since = 0;
+    }
+
+    if (current.pause_since != 0 && opts.pause == 0) {
+        /* Feature turned off, emit duration */
+        time(&idle_dur);
+        report_duration(current.csv, opts.time_format, &current.pause_since, &idle_dur);
+        current.pause_since = 0;
+    }
 #endif
 
     if(is_window_updated(&current, &poll_continue, opts.use_database)) {
@@ -178,6 +198,8 @@ void handle_alarm (int sig) {
 void window_state_init (struct window_state *state) {
     state->force = 0;
     state->last_jiggle = 0;
+    state->jiggle_since = 0;
+    state->pause_since = 0;
     state->last_idle = (unsigned long)(-1);
     state->idle_start = 0;
     state->idle_accumulated = 0;
