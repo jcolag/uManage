@@ -59,6 +59,7 @@ int main (int argc, char *argv[]) {
 #ifdef GUI
     get_executable_path(path, sizeof(path));
     init_indicator(argc, argv, path, &opts);
+    fflush(NULL);
     pthread_create(&thr_menu, NULL, run_indicator, &current.force);
 #endif
     if (opts.use_database) {
@@ -164,6 +165,7 @@ void handle_alarm (int sig) {
         time(&idle_dur);
         report_duration(current.csv, opts.time_format, &current.jiggle_since, &idle_dur);
         current.jiggle_since = 0;
+        write_keepalive_to_database(current.csv);
     }
 
     if (current.pause_since != 0 && opts.pause == 0) {
@@ -171,6 +173,7 @@ void handle_alarm (int sig) {
         time(&idle_dur);
         report_duration(current.csv, opts.time_format, &current.pause_since, &idle_dur);
         current.pause_since = 0;
+        write_pause_to_database(current.csv);
     }
 #endif
 
