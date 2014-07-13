@@ -24,6 +24,7 @@ int get_configuration (struct program_options *opts) {
     strcpy(opts->filename, "");
     strcpy(opts->time_format, "%Y,%m,%d,%H,%M,%S");
     opts->poll_period = 1;
+    opts->mouse_period = 60;
     opts->idle_threshold = 180;
     opts->save_options = 0;
     opts->text_out = 1;

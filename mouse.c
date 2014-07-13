@@ -22,8 +22,7 @@ void report_duration(char *output, char *format, time_t *start, time_t *end) {
      *  Create the CSV line, ready for printing.
      */
     char        startstr[64],
-                endstr[64],
-                format_string[64];
+                endstr[64];
     struct tm  *ltime = NULL;
 
     ltime = localtime(start);
