@@ -38,7 +38,7 @@ The options are:
 
  - `-i`/`--idle` _`idle`_:  Time (in seconds) before idle time counts as idle, to limit racking up "idle" time looking away from the screen.  The default is three minutes (180s).
 
- - `-j`/`--jiggle` _`delay`_:  Time (in seconds) between automatic mouse movements, if active.
+ - `-j`/`--jiggle` _`delay`_:  Time (in seconds) between automatic mouse movements, if active.  The default is one minute (60s).  The option has no effect in the non-GUI version of _uManage_.
 
  - `-n`/`--no-output`:  Block console/file output.
 
@@ -81,7 +81,9 @@ In addition to easier configuration and exit, _uManageUi_ also provides the foll
 
  - _Pause_:  Suspends data collection while active.
 
- - _Jiggle Mouse_:  Moves the mouse back and forth regularly to simulate input activity.
+ - _Jiggle Mouse_:  Moves the mouse back and forth regularly, 25 pixels diagonally, to simulate input activity.  (Use with care, if the jiggle period is low, since turning it off becomes challenging.)
+
+Both log their durations to tables in the database, if available, the `pauses` and `keepalives` tables, respectively.  They each log the starting and ending time of use.
 
 Output
 ======
