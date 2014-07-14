@@ -165,7 +165,9 @@ void handle_alarm (int sig) {
         time(&idle_dur);
         report_duration(current.csv, opts.time_format, &current.jiggle_since, &idle_dur);
         current.jiggle_since = 0;
-        write_keepalive_to_database(current.csv);
+        if (opts.use_database) {
+            write_keepalive_to_database(current.csv);
+        }
     }
 
     if (current.pause_since != 0 && opts.pause == 0) {
@@ -173,7 +175,9 @@ void handle_alarm (int sig) {
         time(&idle_dur);
         report_duration(current.csv, opts.time_format, &current.pause_since, &idle_dur);
         current.pause_since = 0;
-        write_pause_to_database(current.csv);
+        if (opts.use_database) {
+            write_pause_to_database(current.csv);
+        }
     }
 #endif
 
