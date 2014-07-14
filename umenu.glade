@@ -11,31 +11,31 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Show _Options</property>
         <property name="use_underline">True</property>
-     </object>
-   </child>
+      </object>
+    </child>
     <child>
       <object class="GtkCheckMenuItem" id="Menu_Pause">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">_Pause Recording</property>
         <property name="use_underline">True</property>
-     </object>
-   </child>
+      </object>
+    </child>
     <child>
       <object class="GtkCheckMenuItem" id="Menu_Jiggle">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">_Jiggle Mouse</property>
         <property name="use_underline">True</property>
-     </object>
-   </child>
+      </object>
+    </child>
     <child>
       <object class="GtkMenuItem" id="Menu_Quit">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">_Quit</property>
         <property name="use_underline">True</property>
-     </object>
-   </child>
+      </object>
+    </child>
   </object>
 </interface>
