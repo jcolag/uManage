@@ -51,6 +51,8 @@ void activate_quit (GtkMenuItem *menu, gpointer data) {
         ;
     }
     *force = 1;
+    progopts->pause = 0;
+    progopts->jiggle = 0;
     gtk_main_quit();
 }
 

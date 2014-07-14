@@ -98,6 +98,8 @@ void handle_break (int signal) {
     stop_indicator();
 #else
     current.force = 1;
+    opts.pause = 0;
+    opts.jiggle = 0;
 #endif
 }
 
