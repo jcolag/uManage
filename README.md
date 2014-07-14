@@ -83,7 +83,7 @@ In addition to easier configuration and exit, _uManageUi_ also provides the foll
 
  - _Jiggle Mouse_:  Moves the mouse back and forth regularly, 25 pixels diagonally, to simulate input activity.  (Use with care, if the jiggle period is low, since turning it off becomes challenging.)
 
-Both log their durations to tables in the database, if available, the `pauses` and `keepalives` tables, respectively.  They each log the starting and ending time of use.
+Both log their durations to tables in the database, _only_ if available, the `pauses` and `keepalives` tables, respectively.  They each log the starting and ending time of use.
 
 Output
 ======
@@ -134,6 +134,22 @@ The table for this data is named `activity`, and has the following fields:
  - `idle`, the Time Idle, as an `integer`, in seconds.
 
 The difference in date format, of course, reflects SQLite's [Date and Time API](https://www.sqlite.org/lang_datefunc.html).
+
+As mentioned, there are two other tables.
+
+The use of the *Pause Recording* feature is recorded in the `pauses` table, with the following fields.  Again, all date strings are in `%c` format unless configured to do something different in the graphical options interface.
+
+ - `start`, a `text` field representing when the user turned the feature on.
+
+ - `end`, a `text` field representing when the user deactivated the feature.
+
+The use of the *Jiggle Mouse* feature, likewise, is recorded in the `keepalives` table, with fields similar to the `pauses` table:
+
+ - `start`, a `text` field representing when the user turned the feature on.
+
+ - `end`, a `text` field representing when the user deactivated the feature.
+
+Given that the features are not available without the user interface, no data will be logged to `pauses` or `keepalives` using _uManage_ rather than _uManageUi_.
 
 Notes
 -----
