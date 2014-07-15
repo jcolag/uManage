@@ -46,6 +46,8 @@ The options are:
 
  - `-t`/`--time-format` _`format`_:  Time and date format for log entries.  Passed through directly to [`strftime()`](http://en.cppreference.com/w/c/chrono/strftime); quote if necessary.  If `--database` is used, an ISO 8601 format overrides this selection, for compatibility with SQLite.
 
+ - `-x`/`--jiggle-distance` _`distance`_:  Distance to move the mouse pointer when the _Jiggle Mouse_ feature is active.
+
 _uManageUi_ can be invoked the same way.  However, there is potential to also run it _without_ the command-line, provided the output is logged to a file, since the options can be configured and the user can exit graphically.
 
 Alternate Configuration

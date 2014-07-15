@@ -4,15 +4,20 @@
 #include "mouse.h"
 
 static xdo_t *xdo;
-static int mouse_move_dir = -25;
+static int mouse_move_dir = 25;
 
-void move_mouse(void) {
+void move_mouse(int distance) {
     /*
      * Move the mouse, then flip the direction.
      */
+    if(distance != 0 && distance != mouse_move_dir && distance != -mouse_move_dir) {
+        mouse_move_dir = distance;
+    }
+
     if(xdo == NULL) {
         xdo = xdo_new(NULL);
     }
+
     xdo_move_mouse_relative(xdo, mouse_move_dir, mouse_move_dir);
     mouse_move_dir = -mouse_move_dir;
 }

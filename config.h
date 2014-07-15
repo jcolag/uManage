@@ -4,6 +4,7 @@
 struct program_options {
     int             poll_period,
                     mouse_period,       /* Move mouse every (s) if on */
+                    mouse_dist,         /* Pixels to jiggle mouse */
                     idle_threshold,     /* Treat time as idle (s) */
                     save_options,
                     use_database,

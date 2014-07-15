@@ -154,7 +154,7 @@ void handle_alarm (int sig) {
         if(current.last_jiggle == 0) {
             time(&current.last_jiggle);
         } else if ((idle_dur - current.last_jiggle) / opts.mouse_period > 0) {
-            move_mouse();
+            move_mouse(opts.mouse_dist);
             current.last_jiggle = 0;
         }
     }

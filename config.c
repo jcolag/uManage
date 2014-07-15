@@ -25,6 +25,7 @@ int get_configuration (struct program_options *opts) {
     strcpy(opts->time_format, "%Y,%m,%d,%H,%M,%S");
     opts->poll_period = 1;
     opts->mouse_period = 60;
+    opts->mouse_dist = 25;
     opts->idle_threshold = 180;
     opts->save_options = 0;
     opts->text_out = 1;
@@ -125,19 +126,20 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
     int chOpt,              /* For getopt() */
         optIndex = 0;
     static struct option long_options[] = {
-        { "database",    required_argument, NULL, 'b' },
-        { "delay",       required_argument, NULL, 'd' },
-        { "filename",    required_argument, NULL, 'f' },
-        { "idle",        required_argument, NULL, 'i' },
-        { "jiggle",      required_argument, NULL, 'j' },
-        { "no-output",   no_argument,       NULL, 'n' },
-        { "save",        no_argument,       NULL, 's' },
-        { "time-format", required_argument, NULL, 't' },
+        { "database",        required_argument, NULL, 'b' },
+        { "delay",           required_argument, NULL, 'd' },
+        { "filename",        required_argument, NULL, 'f' },
+        { "idle",            required_argument, NULL, 'i' },
+        { "jiggle",          required_argument, NULL, 'j' },
+        { "no-output",       no_argument,       NULL, 'n' },
+        { "save",            no_argument,       NULL, 's' },
+        { "time-format",     required_argument, NULL, 't' },
+        { "jiggle-distance", required_argument, NULL, 'x' },
         { NULL,          0,                 NULL, 0 }
     };
 
     opterr = 0;
-    while((chOpt = getopt_long(argc, argv, "b:d:f:i:j:nst:",
+    while((chOpt = getopt_long(argc, argv, "b:d:f:i:j:nst:x:",
             long_options, &optIndex)) != -1) {
         switch(chOpt) {
             case 'b':
@@ -167,6 +169,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 if (!opts->use_database) {
                     strncpy(opts->time_format, optarg, sizeof(opts->time_format));
                 }
+                break;
+            case 'x':
+                opts->mouse_dist = atoi(optarg);
                 break;
             case '?':
                 if(optopt == 'f' || optopt == 'd' || optopt == 'i')
