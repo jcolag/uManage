@@ -4,16 +4,26 @@
 #include "config.h"
 #include "indicate.h"
 #include "umenu_glade.h"
+#include "uabout.h"
 #include "uoptions.h"
 
 struct program_options *progopts = NULL;
 char pathname[256];
 int *force;
 
+void activate_about (GtkMenuItem *, gpointer);
 void activate_options (GtkMenuItem *, gpointer);
 void activate_pause (GtkCheckMenuItem *, gpointer);
 void activate_jiggle (GtkCheckMenuItem *, gpointer);
 void activate_quit (GtkMenuItem *, gpointer);
+
+void activate_about (GtkMenuItem *menu, gpointer data) {
+    if (menu == NULL && data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    open_uabout(pathname);
+}
 
 void activate_options (GtkMenuItem *menu, gpointer data) {
     if (menu == NULL && data == NULL) {
@@ -84,6 +94,7 @@ void *run_indicator(void *arg) {
     gtk_widget_show_all((GtkWidget*)umenu_Indicator_Menu);
     g_signal_connect(umenu_Menu_Quit, "activate", G_CALLBACK(activate_quit), NULL);
     g_signal_connect(umenu_Menu_Opts, "activate", G_CALLBACK(activate_options), NULL);
+    g_signal_connect(umenu_Menu_About, "activate", G_CALLBACK(activate_about), NULL);
     g_signal_connect(umenu_Menu_Pause, "toggled", G_CALLBACK(activate_pause), NULL);
     g_signal_connect(umenu_Menu_Jiggle, "toggled", G_CALLBACK(activate_jiggle), NULL);
 

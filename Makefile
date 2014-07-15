@@ -1,6 +1,6 @@
 NAME=uManage
 SOURCES=$(NAME).c config.c idle.c winmgmt.c sqlite.c
-UISOURCES=$(SOURCES) indicate.c uoptions.c mouse.c
+UISOURCES=$(SOURCES) indicate.c uoptions.c mouse.c uabout.c
 CC=gcc
 RM=rm
 GLUE=GladeGlue.rb
@@ -16,14 +16,17 @@ all: uManage uManageUi
 uManage: $(SOURCES) uManage.h config.h idle.h winmgmt.h sqlite.h
 	$(CC) -o$(NAME) $(SOURCES) $(CFLAGS) $(LIBFLAGS)
 
-uManageUi: $(UISOURCES) uManage.h config.h idle.h winmgmt.h indicate.h sqlite.h umenu_glade opts_glade
-	$(CC) -DGUI -o$(NAME)Ui $(UISOURCES) umenu_glade.c uoptions_glade.c $(CFLAGS) $(LIBFLAGS)
+uManageUi: $(UISOURCES) uManage.h config.h idle.h winmgmt.h indicate.h sqlite.h umenu_glade opts_glade about_glade
+	$(CC) -DGUI -o$(NAME)Ui $(UISOURCES) umenu_glade.c uoptions_glade.c uabout_glade.c $(CFLAGS) $(LIBFLAGS)
 
 umenu_glade: umenu.glade
 	$(GLUE) umenu
 
 opts_glade: uoptions.glade
 	$(GLUE) uoptions
+
+about_glade: uabout.glade
+	$(GLUE) uabout
 
 clean:
 	$(RM) *~ *_glade.c *_glade.h
