@@ -26,7 +26,7 @@ Usage
 
 Run _uManage_ from the command line (for now) as follows:
 
-    uManage [-b database] [-d loop_delay] [-f log_file] [-i idle_threshold] [-s] [-t time_format]
+    uManage [-b database] [-d loop_delay] [-f log_file] [-i idle_threshold] [-j jiggle_delay] [-n] [-s] [-t time_format]
 
 The options are:
 
@@ -81,7 +81,7 @@ In addition to easier configuration and exit, _uManageUi_ also provides the foll
 
  - _Pause_:  Suspends data collection while active.
 
- - _Jiggle Mouse_:  Moves the mouse back and forth regularly, 25 pixels diagonally, to simulate input activity.  (Use with care, if the jiggle period is low, since turning it off becomes challenging.)
+ - _Jiggle Mouse_:  Moves the mouse back and forth regularly, 25 pixels diagonally, to simulate input activity, thereby avoiding system time-outs.  (Use with care, if the jiggle period is low, since turning it off becomes challenging.)
 
 Both log their durations to tables in the database, _only_ if available, the `pauses` and `keepalives` tables, respectively.  They each log the starting and ending time of use.
 
@@ -121,7 +121,7 @@ Database
 
 _uManage_ will also log to an SQLite database (see the `-b` command-line option and the `[File]`/`database` configuration described above), which has similar fields except for the date, which is a single field by default in C's `%c` format.
 
-The table for this data is named `activity`, and has the following fields:
+The table for this data is named **`activity`**, and has the following fields:
 
  - `start`, a `text` field.  Again, in `%c` format unless configured to do something different in the graphical options interface.
 
@@ -137,13 +137,13 @@ The difference in date format, of course, reflects SQLite's [Date and Time API](
 
 As mentioned, there are two other tables.
 
-The use of the *Pause Recording* feature is recorded in the `pauses` table, with the following fields.  Again, all date strings are in `%c` format unless configured to do something different in the graphical options interface.
+The use of the *Pause Recording* feature is recorded in the **`pauses`** table, with the following fields.  Again, all date strings are in `%c` format unless configured to do something different in the graphical options interface.
 
  - `start`, a `text` field representing when the user turned the feature on.
 
  - `end`, a `text` field representing when the user deactivated the feature.
 
-The use of the *Jiggle Mouse* feature, likewise, is recorded in the `keepalives` table, with fields similar to the `pauses` table:
+The use of the *Jiggle Mouse* feature, likewise, is recorded in the **`keepalives`** table, with fields similar to the `pauses` table:
 
  - `start`, a `text` field representing when the user turned the feature on.
 
