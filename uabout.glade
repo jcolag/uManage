@@ -4,20 +4,28 @@
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkAboutDialog" id="About_Dialog">
     <property name="can_focus">False</property>
+    <property name="type">popup</property>
     <property name="title" translatable="yes">About uManage</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center-always</property>
     <property name="destroy_with_parent">True</property>
     <property name="hide_titlebar_when_maximized">True</property>
     <property name="icon">clock.png</property>
     <property name="type_hint">dialog</property>
+    <property name="has_resize_grip">False</property>
     <property name="program_name">uManage</property>
-    <property name="copyright" translatable="yes">Copyright 2014 John Colagioia
-Application icon adapted from "Clock" by Olyn LeRoy from The Noun Project, used under a Creative Commons Attribution 3.0 license.</property>
+    <property name="copyright" translatable="yes">Copyright 2014 John Colagioia.  Released under the terms of the GNU Public License v3.
+Application icon adapted from "Clock" by Olyn LeRoy from The Noun Project, used under a Creative Commons Attribution 3.0 license.
+Other icons used directly from Gnome.</property>
     <property name="comments" translatable="yes">uManage is a time-monitoring application to operate under the X Window System.  It won't break your train of thought.  It won't make you do any clerical work.
 
-See ~/.uManage for options.</property>
+See ~/.uManage for program options.</property>
     <property name="website">https://github.com/jcolag/uManage</property>
-    <property name="website_label" translatable="yes">See uManage on GitHub</property>
-    <property name="authors">John Colagioia</property>
+    <property name="website_label" translatable="yes">Fork uManage on GitHub</property>
+    <property name="authors">John Colagioia
+Uses the X protocol C-language Binding, xdotool, Glib's key-value file parser, SQLite 3, GTK+ 3, and the Application Indicator library.</property>
+    <property name="artists">Olyn LeRoy (icon adapted by John Colagioia)
+Gnome Desktop Project</property>
     <property name="logo">clock.png</property>
     <property name="license_type">gpl-3-0</property>
     <signal name="response" handler="on_About_Dialog_response" swapped="no"/>
@@ -29,10 +37,11 @@ See ~/.uManage for options.</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="About_Buttons">
             <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
             <property name="layout_style">spread</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
