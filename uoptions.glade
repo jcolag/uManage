@@ -359,7 +359,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image1">
+          <object class="GtkImage" id="img_mouse_1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">input-mouse</property>
@@ -372,10 +372,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image2">
+          <object class="GtkImage" id="img_log">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">accessories-text-editor</property>
+            <property name="icon_name">utilities-system-monitor</property>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -385,7 +385,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image3">
+          <object class="GtkImage" id="img_mouse_2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">input-mouse</property>
@@ -398,7 +398,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image4">
+          <object class="GtkImage" id="img_database">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">network-server</property>
@@ -411,10 +411,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image5">
+          <object class="GtkImage" id="img_format">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">format-text-italic</property>
+            <property name="icon_name">format-indent-more</property>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -424,10 +424,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image6">
+          <object class="GtkImage" id="img_poll">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">appointment-soon</property>
+            <property name="icon_name">system-search</property>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -437,7 +437,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="image7">
+          <object class="GtkImage" id="img_idle">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">appointment-missed</property>
