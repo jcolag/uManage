@@ -136,22 +136,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="Save_Button">
-            <property name="label" translatable="yes">Save Options</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">Image_Save</property>
-            <signal name="clicked" handler="on_Save_Button_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">9</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="Distance_Label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -350,11 +334,13 @@
           <object class="GtkSeparator" id="separator1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">6</property>
-            <property name="width">3</property>
+            <property name="width">4</property>
             <property name="height">1</property>
           </packing>
         </child>
@@ -362,11 +348,13 @@
           <object class="GtkSeparator" id="separator2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">2</property>
-            <property name="width">3</property>
+            <property name="width">4</property>
             <property name="height">1</property>
           </packing>
         </child>
@@ -462,13 +450,34 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkButton" id="Save_Button">
+            <property name="label" translatable="yes">Save Options</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">Image_Save</property>
+            <signal name="clicked" handler="on_Save_Button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">10</property>
+            <property name="width">2</property>
+            <property name="height">1</property>
+          </packing>
         </child>
         <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
+          <object class="GtkSeparator" id="separator3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">9</property>
+            <property name="width">4</property>
+            <property name="height">1</property>
+          </packing>
         </child>
         <child>
           <placeholder/>
