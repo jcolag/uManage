@@ -81,6 +81,14 @@ GUI Features
 
 In addition to easier configuration and exit, _uManageUi_ also provides the following:
 
+ - _About uManage..._:  Shows information on licensing and sources.
+
+ - _Show Options..._:  Provides a simple graphical interface to change the program's configuration options.
+
+ - _Quit_:  Terminates _uManage_ on the next polling cycle.
+
+There are also two features that log information.
+
  - _Pause_:  Suspends data collection while active.
 
  - _Jiggle Mouse_:  Moves the mouse back and forth regularly, 25 pixels diagonally, to simulate input activity, thereby avoiding system time-outs.  (Use with care, if the jiggle period is low, since turning it off becomes challenging.)
@@ -121,11 +129,11 @@ If, however, the time format is changed through configuration, that format repla
 Database
 --------
 
-_uManage_ will also log to an SQLite database (see the `-b` command-line option and the `[File]`/`database` configuration described above), which has similar fields except for the date, which is a single field by default in C's `%c` format.
+_uManage_ will also log to an SQLite database (see the `-b` command-line option and the `[File]`/`database` configuration described above), which has similar fields except for the date, which is a single field by default in C's `%Y-%m-%dT%T` format (based on `%c`, which appears to be incompatible with SQLite, itself).
 
 The table for this data is named **`activity`**, and has the following fields:
 
- - `start`, a `text` field.  Again, in `%c` format unless configured to do something different in the graphical options interface.
+ - `start`, a `text` field.  Again, in `%Y-%m-%dT%T` format unless configured to do something different in the graphical options interface.
 
  - `window`, the Window ID, also `text`.  Technically, since it's an eight-digit hexadecimal number, it could obviously be an integer, but it's doubtful that anybody could rationally use it _as_ a number.
 
@@ -139,7 +147,7 @@ The difference in date format, of course, reflects SQLite's [Date and Time API](
 
 As mentioned, there are two other tables.
 
-The use of the *Pause Recording* feature is recorded in the **`pauses`** table, with the following fields.  Again, all date strings are in `%c` format unless configured to do something different in the graphical options interface.
+The use of the *Pause Recording* feature is recorded in the **`pauses`** table, with the following fields.  Again, all date strings are in `%Y-%m-%dT%T` format unless configured to do something different in the graphical options interface.
 
  - `start`, a `text` field representing when the user turned the feature on.
 
