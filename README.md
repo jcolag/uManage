@@ -212,3 +212,22 @@ The application menu also uses the [Application Indicator](https://wiki.ubuntu.c
 
 More to come as the application advances, but this should be a good start.
 
+The Future
+==========
+
+Some possible options that may eventually be in the works come largely from scripts I already use to monitor certain activity.
+
+ - [ ] User-defined start/stop states.
+
+ - [ ] Trigger actions when state changes, for example opening a web page or start an application after a long time idle or paused.
+
+ - [ ] Download and log/insert supplemental data such as weather.
+
+ - [ ] Create installable package.
+
+ - [ ] Show program state through application icon, especially _Pause_.
+
+ - [ ] Allow filing notes from indicator menu.  (Possible with GTK+?)
+
+ - [ ] Report on log entries.  (Separate application?)
+
