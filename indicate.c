@@ -16,6 +16,7 @@ void activate_options (GtkMenuItem *, gpointer);
 void activate_pause (GtkCheckMenuItem *, gpointer);
 void activate_jiggle (GtkCheckMenuItem *, gpointer);
 void activate_quit (GtkMenuItem *, gpointer);
+void activate_user (GtkCheckMenuItem *, gpointer);
 
 void activate_about (GtkMenuItem *menu, gpointer data) {
     if (menu == NULL && data == NULL) {
@@ -66,6 +67,18 @@ void activate_quit (GtkMenuItem *menu, gpointer data) {
     gtk_main_quit();
 }
 
+void activate_user (GtkCheckMenuItem *menu, gpointer data) {
+    const char *label;
+    gboolean active;
+
+    if (data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    label = gtk_menu_item_get_label((GtkMenuItem *)menu);
+    active = gtk_check_menu_item_get_active(menu);
+}
+
 void stop_indicator (void) {
     activate_quit(NULL, NULL);
 }
@@ -109,6 +122,7 @@ int add_menu_items(char **items) {
 
     for (idx = 0; items[idx] != NULL; idx++) {
         item = gtk_check_menu_item_new_with_label(items[idx]);
+        g_signal_connect(item, "activate", G_CALLBACK(activate_user), NULL);
         gtk_menu_shell_insert((GtkMenuShell *)umenu_Indicator_Menu, item, loc);
         ++loc;
     }
