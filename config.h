@@ -10,7 +10,9 @@ struct program_options {
                     use_database,
                     text_out,           /* Print to console or file */
                     pause,              /* Don't record */
-                    jiggle;             /* Move mouse */
+                    jiggle,             /* Move mouse */
+                    menu_len,           /* Number of custom menu items */
+                   *userdef;            /* Menu items active */
     char            filename[256],
                     dbname[256],
                     time_format[64],

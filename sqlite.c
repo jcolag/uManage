@@ -10,7 +10,7 @@ sqlite3    *sql = NULL;
 
 int open_database(char *name) {
     char *activity = "CREATE TABLE IF NOT EXISTS activity (start TEXT, window TEXT, title TEXT, used INTEGER, idle INTEGER);",
-         *pauses = "CREATE TABLE IF NOT EXISTS pauses (start TEXT, end TEXT);",
+         *pauses = "CREATE TABLE IF NOT EXISTS pauses (start TEXT, end TEXT, reason TEXT);",
          *keepalives = "CREATE TABLE IF NOT EXISTS keepalives (start TEXT, end TEXT);",
          *error;
     int status = 0;
@@ -70,8 +70,11 @@ int write_keepalive_to_database(char *insert) {
     return write_to_database("keepalives", insert, 0);
 }
 
-int write_pause_to_database(char *insert) {
-    return write_to_database("pauses", insert, 0);
+int write_pause_to_database(char *insert, char *reason) {
+    char csv[512];
+
+    sprintf(csv, "%s,'%s'", insert, reason);
+    return write_to_database("pauses", csv, 0);
 }
 
 void close_database(void) {

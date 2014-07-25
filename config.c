@@ -17,7 +17,7 @@ int get_configuration (struct program_options *opts) {
     GKeyFile *keyfile;
     GKeyFileFlags flags;
     GError *error = NULL;
-    int t_int;
+    int t_int, idx;
     char *t_str;
 
     /* Defaults */
@@ -72,6 +72,13 @@ int get_configuration (struct program_options *opts) {
         opts->text_out = !t_int;
     }
     opts->menu_items = g_key_file_get_keys(keyfile, "Menu", (gsize*)&t_int, NULL);
+    opts->menu_len = t_int;
+    if (t_int != 0) {
+        opts->userdef = malloc(t_int * sizeof(int));
+        for (idx = 0; idx < t_int; idx++) {
+            opts->userdef[idx] = 0;
+        }
+    }
     return 1;
 }
 

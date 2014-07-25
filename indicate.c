@@ -70,6 +70,7 @@ void activate_quit (GtkMenuItem *menu, gpointer data) {
 void activate_user (GtkCheckMenuItem *menu, gpointer data) {
     const char *label;
     gboolean active;
+    int idx = 0;
 
     if (data == NULL) {
         /* Bogus condition to use parameters */
@@ -77,6 +78,12 @@ void activate_user (GtkCheckMenuItem *menu, gpointer data) {
     }
     label = gtk_menu_item_get_label((GtkMenuItem *)menu);
     active = gtk_check_menu_item_get_active(menu);
+    for (idx = 0; idx < progopts->menu_len; idx++) {
+        if (!strcmp(progopts->menu_items[idx], label)) {
+            progopts->userdef[idx] = active ? 1 : -progopts->userdef[idx];
+            break;
+        }
+    }
 }
 
 void stop_indicator (void) {
