@@ -13,7 +13,8 @@ struct program_options {
                     jiggle;             /* Move mouse */
     char            filename[256],
                     dbname[256],
-                    time_format[64];
+                    time_format[64],
+                  **menu_items;         /* Custom menu items */
 };
 
 int get_configuration (struct program_options *);

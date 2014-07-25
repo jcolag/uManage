@@ -71,6 +71,7 @@ int get_configuration (struct program_options *opts) {
     if (t_int != 0) {
         opts->text_out = !t_int;
     }
+    opts->menu_items = g_key_file_get_keys(keyfile, "Menu", (gsize*)&t_int, NULL);
     return 1;
 }
 
