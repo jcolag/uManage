@@ -102,3 +102,19 @@ void *run_indicator(void *arg) {
     return arg;
 }
 
+int add_menu_items(char **items) {
+    int         idx,
+                loc = 6;
+    GtkWidget  *item;
+
+    for (idx = 0; items[idx] != NULL; idx++) {
+        item = gtk_check_menu_item_new_with_label(items[idx]);
+        gtk_menu_shell_insert((GtkMenuShell *)umenu_Indicator_Menu, item, loc);
+        ++loc;
+    }
+    if (idx > 0) {
+        item = gtk_separator_menu_item_new();
+        gtk_menu_shell_insert((GtkMenuShell *)umenu_Indicator_Menu, item, loc);
+    }
+    return idx;
+}

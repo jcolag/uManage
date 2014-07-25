@@ -59,6 +59,9 @@ int main (int argc, char *argv[]) {
 #ifdef GUI
     get_executable_path(path, sizeof(path));
     init_indicator(argc, argv, path, &opts);
+    if (opts.menu_items != NULL) {
+        add_menu_items(opts.menu_items);
+    }
     fflush(NULL);
     pthread_create(&thr_menu, NULL, run_indicator, &current.force);
 #endif
