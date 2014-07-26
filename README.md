@@ -55,7 +55,7 @@ Alternate Configuration
 
 You can also set options with a configuration file in your home directory.  At this time, there are equivalent options to the above, divided into two categories.
 
-For obvious reasons, there is no equivalent to `-s`.
+For obvious reasons, there is no equivalent to `-s`.  However, there is the menu configuration here that isn't available otherwise.
 
 The following is an example `~/.uManage` file with all available options set:
 
@@ -69,6 +69,10 @@ The following is an example `~/.uManage` file with all available options set:
     poll=2
     format=%c
     jiggle=23
+
+    [Menu]
+    Cooking=
+    Morning Exercise=
 
 The aforementioned defaults are still in effect if they are not replaced by the file, and command-line options override the file's options.
 
@@ -94,6 +98,28 @@ There are also two features that log information.
  - _Jiggle Mouse_:  Moves the mouse back and forth regularly, 25 pixels diagonally, to simulate input activity, thereby avoiding system time-outs.  (Use with care, if the jiggle period is low, since turning it off becomes challenging.)
 
 Both log their durations to tables in the database, _only_ if available, the `pauses` and `keepalives` tables, respectively.  They each log the starting and ending time of use.
+
+User Defined
+------------
+
+Through the use of the configuration file, _uManageUi_ also tracks the duration of any user-defined activities.
+
+You can define each activity in the `.uManage` file, with a `[Menu]` section, followed by each desired item followed by an equal sign (`=`).  For example, the following might handle major daily activities, though I don't know many people with the discipline to fill it all in.
+
+    [Menu]
+    Wash Up=
+    Exercise=
+    Eat=
+    Commute=
+    Work=
+    Watch Television=
+    Go Out=
+
+Notice that the items may be any string (that doesn't have an equal sign in it), including spaces.  Those titles (spaces included) become the `reason` listed in the log, as described below.
+
+Failing to terminate with the equal sign causes the Glib key-file parser some sort of indigestive problem.  At best, it skips the name.  At worst, it may crash.  A this time, no value is read for the key, though future expansion may provide a use.
+
+For the moment, all such activities are logged to the `pauses` table, even though they don't pause operations.
 
 Output
 ======
@@ -153,7 +179,9 @@ The use of the *Pause Recording* feature is recorded in the **`pauses`** table, 
 
  - `end`, a `text` field representing when the user deactivated the feature.
 
-The use of the *Jiggle Mouse* feature, likewise, is recorded in the **`keepalives`** table, with fields similar to the `pauses` table:
+ - `reason`, another `text` field showing what the duration represents.  Pauses are marked **`Pause`**, while any user-defined options will show under their own titles.
+
+The use of the *Jiggle Mouse* feature, likewise, is recorded in the **`keepalives`** table, with fields mostly similar to the `pauses` table:
 
  - `start`, a `text` field representing when the user turned the feature on.
 
@@ -217,7 +245,7 @@ The Future
 
 Some possible options that may eventually be in the works come largely from scripts I already use to monitor certain activity.
 
- - [ ] User-defined start/stop states.
+ - [X] User-defined start/stop states.
 
  - [ ] Trigger actions when state changes, for example opening a web page or start an application after a long time idle or paused.
 
