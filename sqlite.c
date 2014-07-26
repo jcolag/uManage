@@ -70,7 +70,7 @@ int write_keepalive_to_database(char *insert) {
     return write_to_database("keepalives", insert, 0);
 }
 
-int write_pause_to_database(char *insert, char *reason) {
+int write_duration_to_database(char *insert, char *reason) {
     char csv[512];
 
     sprintf(csv, "%s,'%s'", insert, reason);

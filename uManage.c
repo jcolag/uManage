@@ -164,7 +164,7 @@ void handle_alarm (int sig) {
             opts.userdef[idx] = -opts.userdef[idx];
             report_duration(current.csv, opts.time_format, (time_t *)&opts.userdef[idx], &idle_dur);
             if (opts.use_database) {
-                write_pause_to_database(current.csv, opts.menu_items[idx]);
+                write_duration_to_database(current.csv, opts.menu_items[idx]);
             }
             opts.userdef[idx] = 0;
         }
@@ -200,7 +200,7 @@ void handle_alarm (int sig) {
         report_duration(current.csv, opts.time_format, &current.pause_since, &idle_dur);
         current.pause_since = 0;
         if (opts.use_database) {
-            write_pause_to_database(current.csv, "Pause");
+            write_duration_to_database(current.csv, "Pause");
         }
     }
 #endif
