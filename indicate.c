@@ -57,6 +57,8 @@ void activate_jiggle (GtkCheckMenuItem *menu, gpointer data) {
 }
 
 void activate_quit (GtkMenuItem *menu, gpointer data) {
+    int idx;
+
     if (menu == NULL && data == NULL) {
         /* Bogus condition to use parameters */
         ;
@@ -64,6 +66,11 @@ void activate_quit (GtkMenuItem *menu, gpointer data) {
     *force = 1;
     progopts->pause = 0;
     progopts->jiggle = 0;
+    for (idx = 0; idx < progopts->menu_len; idx++) {
+        if (progopts->userdef[idx] > 1) {
+            progopts->userdef[idx] = -progopts->userdef[idx];
+        }
+    }
     gtk_main_quit();
 }
 
