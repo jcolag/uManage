@@ -10,7 +10,7 @@
  * Internal-only Functions
  */
 int openSocket(char *, char *, char *);
-int retrievePage(int, int, int, int, char *);
+int retrievePage(int, int, int, int, char *, char *);
 char *parseLine(char *);
 char *matchNext(char *, char *);
 char *matchNth(char *, char *, int);
@@ -33,7 +33,7 @@ int     linesRemaining = 0;
  * Returns -1 on error, the number of data lines (days) found
  * for the month.
  */
-int getWxMonth(int year, int month) {
+int getWxMonth(int year, int month, char *airport) {
     int     sock, status, count = -1;
     char    inmesg[16384], *pin, *eol = "<br />\n";
 
@@ -46,7 +46,7 @@ int getWxMonth(int year, int month) {
     if (sock < 3) {
         return -1;
     }
-    status = retrievePage(sock, year, month, 31, inmesg);
+    status = retrievePage(sock, year, month, 31, airport, inmesg);
     if (status < 0) {
         return -1;
     }
@@ -165,14 +165,14 @@ int openSocket(char *hostname, char *service, char *protocol) {
  * Return -1 on any error (pick up errno later)
  * Otherwise, the length of the returned page.
  */
-int retrievePage(int sock, int year, int month, int day, char *input){
+int retrievePage(int sock, int year, int month, int day, char *airport, char *input){
     int     offset = 0, status;
     char    request[128];
 
     /*
      * Send a simple HTTP request for the date.
      */
-    sprintf (request, "GET /history/airport/KFRG/%04d/%02d/%02d/MonthlyHistory.html?format=1 HTTP/1.0\n\n", year, month, day);
+    sprintf (request, "GET /history/airport/%s/%04d/%02d/%02d/MonthlyHistory.html?format=1 HTTP/1.0\n\n", airport, year, month, day);
     status = send(sock, request, strlen(request), 0);
     if (status < 0) {
         return -1;
