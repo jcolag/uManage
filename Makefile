@@ -1,5 +1,5 @@
 NAME=uManage
-SOURCES=$(NAME).c config.c idle.c winmgmt.c sqlite.c
+SOURCES=$(NAME).c config.c idle.c winmgmt.c sqlite.c weather.c
 UISOURCES=$(SOURCES) indicate.c uoptions.c mouse.c uabout.c
 CC=gcc
 RM=rm
@@ -13,10 +13,10 @@ DBGFLAGS=-g
 
 all: uManage uManageUi
 
-uManage: $(SOURCES) uManage.h config.h idle.h winmgmt.h sqlite.h
+uManage: $(SOURCES) uManage.h config.h idle.h winmgmt.h sqlite.h weather.h
 	$(CC) -o$(NAME) $(SOURCES) $(CFLAGS) $(LIBFLAGS)
 
-uManageUi: $(UISOURCES) uManage.h config.h idle.h winmgmt.h indicate.h sqlite.h umenu_glade opts_glade about_glade
+uManageUi: $(UISOURCES) uManage.h config.h idle.h winmgmt.h indicate.h sqlite.h weather.h umenu_glade opts_glade about_glade
 	$(CC) -DGUI -o$(NAME)Ui $(UISOURCES) umenu_glade.c uoptions_glade.c uabout_glade.c $(CFLAGS) $(LIBFLAGS)
 
 umenu_glade: umenu.glade

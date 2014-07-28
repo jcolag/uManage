@@ -5,6 +5,7 @@
 #include <strings.h>
 #include <stdio.h>
 #include <errno.h>
+#include "weather.h"
 
 /*
  * Internal-only Functions
