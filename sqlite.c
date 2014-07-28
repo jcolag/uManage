@@ -12,6 +12,7 @@ int open_database(char *name) {
     char *activity = "CREATE TABLE IF NOT EXISTS activity (start TEXT, window TEXT, title TEXT, used INTEGER, idle INTEGER);",
          *pauses = "CREATE TABLE IF NOT EXISTS pauses (start TEXT, end TEXT, reason TEXT);",
          *keepalives = "CREATE TABLE IF NOT EXISTS keepalives (start TEXT, end TEXT);",
+         *weather = "CREATE TABLE IF NOT EXISTS weather (date TEXT, maxTemp INTEGER, meanTemp INTEGER, minTemp INTEGER, maxDew INTEGER, meanDew INTEGER, minDew INTEGER, maxHumid INTEGER, meanHumid INTEGER, minHumid INTEGER, maxPressure REAL, meanPressure REAL, minPressure REAL, maxVisibility INTEGER, meanVisibility INTEGER, minVisibility INTEGER, maxWind INTEGER, meanWind INTEGER, maxGust INTEGER, precipitation REAL, clouds INTEGER, events TEXT, windDirection INTEGER);",
          *error;
     int status = 0;
 
@@ -24,6 +25,10 @@ int open_database(char *name) {
         return status;
     }
     status = sqlite3_exec(sql, activity, NULL, NULL, &error);
+    if (status) {
+        return status;
+    }
+    status = sqlite3_exec(sql, weather, NULL, NULL, &error);
     if (status) {
         return status;
     }
@@ -75,6 +80,10 @@ int write_duration_to_database(char *insert, char *reason) {
 
     sprintf(csv, "%s,'%s'", insert, reason);
     return write_to_database("pauses", csv, 0);
+}
+
+int write_weather_to_database(char *insert) {
+    return write_to_database("weather", insert, 0);
 }
 
 void close_database(void) {
