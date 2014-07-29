@@ -11,11 +11,13 @@ struct program_options {
                     text_out,           /* Print to console or file */
                     pause,              /* Don't record */
                     jiggle,             /* Move mouse */
+                    weather,            /* Download? */
                     menu_len,           /* Number of custom menu items */
                    *userdef;            /* Menu items active */
     char            filename[256],
                     dbname[256],
                     time_format[64],
+                    airport[8],
                   **menu_items;         /* Custom menu items */
 };
 

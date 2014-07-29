@@ -67,6 +67,10 @@ int get_configuration (struct program_options *opts) {
         strcpy(opts->time_format, "%Y-%m-%dT%T");
         strcpy(opts->dbname, t_str);
     }
+    t_str = g_key_file_get_string(keyfile, "User", "airport", NULL);
+    if (t_str != NULL) {
+        strcpy(opts->airport, t_str);
+    }
     t_int = g_key_file_get_integer(keyfile, "File", "notext", NULL);
     if (t_int != 0) {
         opts->text_out = !t_int;
@@ -86,6 +90,7 @@ int save_configuration (struct program_options *opts) {
     struct passwd *passwd = getpwuid(getuid());
     const char *homedir = passwd->pw_dir;
     char keyfilename[256];
+    int  menu;
     GKeyFile *keyfile;
     GKeyFileFlags flags;
     GError *error = NULL;
@@ -122,6 +127,14 @@ int save_configuration (struct program_options *opts) {
     if (opts->text_out != 0) {
         g_key_file_set_integer(keyfile, "File", "notext", !opts->text_out);
     }
+    if (opts->airport != 0) {
+        g_key_file_set_string(keyfile, "User", "airport", opts->airport);
+    }
+    for (menu = 0; menu < opts->menu_len; menu++) {
+        if (opts->airport != 0) {
+            g_key_file_set_string(keyfile, "Menu", opts->menu_items[menu], "");
+        }
+    }
     if (!g_key_file_save_to_file(keyfile, keyfilename, NULL)) {
         fprintf(stderr, "Cannot save configuration to %s:  %s\n",
                 keyfilename, error->message);
@@ -134,6 +147,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
     int chOpt,              /* For getopt() */
         optIndex = 0;
     static struct option long_options[] = {
+        { "airport",         required_argument, NULL, 'a' },
         { "database",        required_argument, NULL, 'b' },
         { "delay",           required_argument, NULL, 'd' },
         { "filename",        required_argument, NULL, 'f' },
@@ -142,14 +156,18 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
         { "no-output",       no_argument,       NULL, 'n' },
         { "save",            no_argument,       NULL, 's' },
         { "time-format",     required_argument, NULL, 't' },
+        { "weather",         required_argument, NULL, 'w' },
         { "jiggle-distance", required_argument, NULL, 'x' },
-        { NULL,          0,                 NULL, 0 }
+        { NULL,              0,                 NULL,  0  }
     };
 
     opterr = 0;
-    while((chOpt = getopt_long(argc, argv, "b:d:f:i:j:nst:x:",
+    while((chOpt = getopt_long(argc, argv, "a:b:d:f:i:j:nst:w:x:",
             long_options, &optIndex)) != -1) {
         switch(chOpt) {
+            case 'a':
+                strncpy(opts->airport, optarg, sizeof(opts->airport));
+                break;
             case 'b':
                 opts->use_database = 1;
                 strncpy(opts->dbname, optarg, sizeof(opts->dbname));
@@ -178,6 +196,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                     strncpy(opts->time_format, optarg, sizeof(opts->time_format));
                 }
                 break;
+            case 'w':
+                opts->weather = strcmp(optarg, "off");
+                break;
             case 'x':
                 opts->mouse_dist = atoi(optarg);
                 break;
@@ -191,6 +212,7 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                     fprintf(stderr, "Unknown option character `\\x%x'.\n",
                             optopt);
                 fprintf(stderr, "%s ", argv[0]);
+                fprintf(stderr, "[-a airport] ");
                 fprintf(stderr, "[-b database] ");
                 fprintf(stderr, "[-d period] ");
                 fprintf(stderr, "[-f file.csv] ");
@@ -198,7 +220,9 @@ int parse_options (int argc, char **argv, struct program_options *opts) {
                 fprintf(stderr, "[-j period] ");
                 fprintf(stderr, "[-n] ");
                 fprintf(stderr, "[-s] ");
-                fprintf(stderr, "[-t format]\n\n");
+                fprintf(stderr, "[-t format] ");
+                fprintf(stderr, "[-w weather] ");
+                fprintf(stderr, "[-x distance]\n\n");
                 return 1;
             default:
                 return 2;
