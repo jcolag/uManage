@@ -89,13 +89,13 @@ int write_weather_to_database(char *insert) {
 
 int queryRowsForMonth(char *table, int year, int month) {
     int status, rows;
-    char *fmt = "SELECT COUNT(DATE(start)) FROM %s WHERE start > DATE('%04d-%02d-01') AND start < DATE('%04d-%02d-31')", *remain, query[256];
+    char *fmt = "SELECT COUNT(DATE(date)) FROM %s WHERE date > DATE('%04d-%02d-01') AND date < DATE('%04d-%02d-31')", *remain, query[256];
     sqlite3_stmt *stmt;
 
     sprintf(query, fmt, table, year, month, year, month);
     status = sqlite3_prepare_v2(sql, query, strlen(query), &stmt, (const char**)&remain);
-    if (status) {
-        return status;
+    if (status != SQLITE_OK) {
+        return -status;
     }
 
     status = sqlite3_step(stmt);

@@ -10,18 +10,19 @@
 /*
  * Internal-only Functions
  */
+int daysInMonth(int year, int month);
 int openSocket(char *, char *, char *);
-int retrievePage(int, int, int, int, char *, char *);
-char *parseLine(char *);
+int retrievePage(int, int, int, int, char *, char *, int);
+char *parseLine(char *, int);
 char *matchNext(char *, char *);
 char *matchNth(char *, char *, int);
 
 /*
  * Global state, including a full buffer and indicators inside
  */
-char    outcsv[16384],
-       *current;
-int     linesRemaining = 0;
+static  char    outcsv[16384],
+               *current;
+static  int     linesRemaining = 0;
 
 /*
  * getWxMonth()
@@ -35,8 +36,8 @@ int     linesRemaining = 0;
  * for the month.
  */
 int getWxMonth(int year, int month, char *airport) {
-    int     sock, status, count = -1;
-    char    inmesg[16384], *pin, *eol = "<br />\n";
+    int     sock, status, count = -1, days;
+    char    inmesg[32768], *pin, *eol = "<br />\n";
 
     current = outcsv;
 
@@ -47,7 +48,8 @@ int getWxMonth(int year, int month, char *airport) {
     if (sock < 3) {
         return -1;
     }
-    status = retrievePage(sock, year, month, 31, airport, inmesg);
+    days = daysInMonth(year, month);
+    status = retrievePage(sock, year, month, days, airport, inmesg, sizeof(inmesg));
     if (status < 0) {
         return -1;
     }
@@ -65,7 +67,7 @@ int getWxMonth(int year, int month, char *airport) {
      * Count up and reformat each day of the month.
      */
     while (pin != NULL) {
-        pin = parseLine(pin);
+        pin = parseLine(pin, pin == inmesg);
         ++count;
     }
     linesRemaining = count;
@@ -82,7 +84,13 @@ int getWxMonth(int year, int month, char *airport) {
  */
 int nextWxLine(char *line) {
     int     len;
-    char   *pin = strstr(current, "\n");
+    char   *pin;
+
+    if (current == NULL) {
+        --linesRemaining;
+        return 0;
+    }
+    pin = strstr(current, "\n");
 
     /*
      * No line feed, so no data available...
@@ -114,6 +122,43 @@ int nextWxLine(char *line) {
  */
 int wxLinesRemaining(void) {
     return linesRemaining;
+}
+
+/*
+ * daysInMonth() - Internal use only
+ * Parameters are the year and month of interest
+ *
+ * Return the number of days in the month
+ */
+int daysInMonth(int year, int month) {
+    int days;
+    switch (month) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            days = 31;
+            break;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            days = 30;
+            break;
+        case 2:
+            days = 28;
+            if (year % 4 == 0) {
+                days = 29;
+            }
+            break;
+        default:
+            days = 0;
+            break;
+    }
+    return days;
 }
 
 /*
@@ -166,7 +211,7 @@ int openSocket(char *hostname, char *service, char *protocol) {
  * Return -1 on any error (pick up errno later)
  * Otherwise, the length of the returned page.
  */
-int retrievePage(int sock, int year, int month, int day, char *airport, char *input){
+int retrievePage(int sock, int year, int month, int day, char *airport, char *input, int max){
     int     offset = 0, status;
     char    request[128];
 
@@ -184,7 +229,7 @@ int retrievePage(int sock, int year, int month, int day, char *airport, char *in
      * Keep reading until we have the entire file.
      */
     while (status > 0) {
-        status = recv(sock, input + offset, sizeof(input), 0);
+        status = recv(sock, input + offset, max - offset, 0);
         offset += status;
     }
     return offset;
@@ -204,9 +249,11 @@ int retrievePage(int sock, int year, int month, int day, char *airport, char *in
  * Returns the point past the parsed string, updating the
  * start parameter.
  */
-char *parseLine(char *start) {
+char *parseLine(char *start, int reset) {
 static  int     icsv = 0;
+/*
         int     comma = 20;
+*/
         char    message[128], *pin = start, *shadow, *eol = "<br />\n";
 
     /*
@@ -214,6 +261,13 @@ static  int     icsv = 0;
      */
     if (pin == NULL) {
         return NULL;
+    }
+
+    /*
+     * This is a new batch of data
+     */
+    if (reset) {
+        icsv = 0;
     }
 
     /*
@@ -253,10 +307,22 @@ static  int     icsv = 0;
     shadow = pin;
 
     /*
+     * Find the wind gust field
+     * If it's empty, insert a 0
+     */
+    pin = matchNth(pin, ",", 17);
+    strcat(message, shadow);
+    strcat(message, ",");
+    if (pin[1] == ',') {
+        strcat(message, "0");
+    }
+    shadow = pin = pin + 1;
+
+    /*
      * Find the description field and quote it
      * Don't forget to copy the fields in between
      */
-    pin = matchNth(pin, ",", comma);
+    pin = matchNth(pin, ",", 3);
     strcat(message, shadow);
     strcat(message, ",\"");
     shadow = pin = pin + 1;
