@@ -86,6 +86,27 @@ int write_weather_to_database(char *insert) {
     return write_to_database("weather", insert, 0);
 }
 
+
+int queryRowsForMonth(char *table, int year, int month) {
+    int status, rows;
+    char *fmt = "SELECT COUNT(DATE(start)) FROM %s WHERE start > DATE('%04d-%02d-01') AND start < DATE('%04d-%02d-31')", *remain, query[256];
+    sqlite3_stmt *stmt;
+
+    sprintf(query, fmt, table, year, month, year, month);
+    status = sqlite3_prepare_v2(sql, query, strlen(query), &stmt, (const char**)&remain);
+    if (status) {
+        return status;
+    }
+
+    status = sqlite3_step(stmt);
+    if (status != SQLITE_ROW) {
+        return -1;
+    }
+
+    rows = sqlite3_column_int(stmt, 0);
+    return rows;
+}
+
 void close_database(void) {
     if (sql == NULL) {
         return;
