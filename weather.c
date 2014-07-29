@@ -221,12 +221,35 @@ static  int     icsv = 0;
      * Find the end of the first field
      * Quote that field (a date)
      */
-    pin += strlen(eol);
+    if (pin[0] == '<') {
+        pin += strlen(eol);
+    }
     shadow = pin;
+
+    if ((pin = matchNext(pin, "-")) == NULL) {
+        return NULL;
+    }
+    sprintf(message, "\"%s-", shadow);
+    if (pin[1] == '-') {
+        strcat(message, "0");
+    }
+
+    shadow = pin;
+    if ((pin = matchNext(pin, "-")) == NULL) {
+        return NULL;
+    }
+    strcat(message, shadow);
+    strcat(message, "-");
+    if (pin[1] == ',') {
+        strcat(message, "0");
+    }
+    shadow = pin;
+
     if ((pin = matchNext(pin, ",")) == NULL) {
         return NULL;
     }
-    sprintf(message, "\"%s\",", shadow);
+    strcat(message, shadow);
+    strcat(message, "\",");
     shadow = pin;
 
     /*
