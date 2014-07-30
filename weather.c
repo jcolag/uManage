@@ -67,7 +67,7 @@ int getWxMonth(int year, int month, char *airport) {
      * Count up and reformat each day of the month.
      */
     while (pin != NULL) {
-        pin = parseLine(pin, pin == inmesg);
+        pin = parseLine(pin, count < 0);
         ++count;
     }
     linesRemaining = count;
@@ -214,6 +214,10 @@ int openSocket(char *hostname, char *service, char *protocol) {
 int retrievePage(int sock, int year, int month, int day, char *airport, char *input, int max){
     int     offset = 0, status;
     char    request[128];
+
+    if (!strcmp(airport, "")) {
+        return 0;
+    }
 
     /*
      * Send a simple HTTP request for the date.
