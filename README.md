@@ -26,9 +26,11 @@ Usage
 
 Run _uManage_ from the command line (for now) as follows:
 
-    uManage [-b database] [-d loop_delay] [-f log_file] [-i idle_threshold] [-j jiggle_delay] [-n] [-s] [-t time_format]
+    uManage [-a airport] [-b database] [-d loop_delay] [-f log_file] [-i idle_threshold] [-j jiggle_delay] [-n] [-s] [-t time_format] [-w on/off] [-x distance]
 
 The options are:
+
+ - `-a`/`--airport` _`code`_:  The [ICAO](https://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_K) airport code from which to pull weather data.
 
  - `-b`/`--database` _`database`_:  Name of an SQLite3 database file, which _uManage_ will create, if it doesn't already exist.  __Note__ that _uManage_ will automatically set the _time format_ (see `-t`, below) to `%Y-%m-%dT%T` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601), which is required for SQLite's date and time functions) and block attempts to change the format.  Items in the CSV will also be quoted (including the entire date, regardless of format) for compatability with the database.
 
@@ -45,6 +47,8 @@ The options are:
  - `-s`/`--save`:  Save current configuration options to the configuration file.  __Warning__:  This option will overwrite the existing options.
 
  - `-t`/`--time-format` _`format`_:  Time and date format for log entries.  Passed through directly to [`strftime()`](http://en.cppreference.com/w/c/chrono/strftime); quote if necessary.  If `--database` is used, an ISO 8601 format overrides this selection, for compatibility with SQLite.
+
+ - `-w`/`--weather` _`on`_/_`off`_:  Turn weather data acquisition on and off at the beginnings of months.  Default is _`on`_.
 
  - `-x`/`--jiggle-distance` _`distance`_:  Distance to move the mouse pointer when the _Jiggle Mouse_ feature is active.
 
@@ -69,6 +73,9 @@ The following is an example `~/.uManage` file with all available options set:
     poll=2
     format=%c
     jiggle=23
+
+    [User]
+    airport=KIAD
 
     [Menu]
     Cooking=
@@ -171,6 +178,58 @@ The table for this data is named **`activity`**, and has the following fields:
 
 The difference in date format, of course, reflects SQLite's [Date and Time API](https://www.sqlite.org/lang_datefunc.html).
 
+As near as feasible to the new month, if the database is being used, _uManage_ will also download the previous month's worth of weather data from [The Weather Underground](http://wunderground.com/) through their API.
+
+The resulting **`weather`** table is as follows.
+
+ - `date`, a `text` field, the day's date, in the equivalent of `%Y-%m-%d` format.
+
+ - `maxTemp`, an `integer` field, the day's high temperature.
+
+ - `meanTemp`, an `integer` field, the day's average temperature.
+
+ - `minTemp`, an `integer` field, the day's low temperature.
+
+ - `maxDew`, an `integer` field, the day's high dewpoint temperature.
+
+ - `meanDew`, an `integer` field, the day's average dewpoint temperature.
+
+ - `minDew`, an `integer` field, the day's low dewpoint temperature.
+
+ - `maxHumid`, an `integer` field, the day's high relative humidity, as a percentage.
+
+ - `meanHumid`, an `integer` field, the day's average relative humidity, as a percentage.
+
+ - `minHumid`, an `integer` field, the day's low relative humidity, as a percentage.
+
+ - `maxPressure`, a `real` field, the day's high pressure reading.
+
+ - `meanPressure`, a `real` field, the day's average pressure reading.
+
+ - `minPressure`, a `real` field, the day's low pressure reading.
+
+ - `maxVisibility`, an `integer` field, the day's maximum distance visible.
+
+ - `meanVisibility`, an `integer` field, the day's average distance visible.
+
+ - `minVisibility`, an `integer` field, the day's minimum distance visible.
+
+ - `maxWind`, an `integer` field, the day's maximum sustained wind speed.
+
+ - `meanWind`, an `integer` field, the day's average sustained wind speed.
+
+ - `maxGust`, an `integer` field, the maximum gusting wind speed for the day.
+
+ - `precipitation`, a `real` field, the day's total precipitation.
+
+ - `clouds`, an `integer` field, a percentage of cloud coverage for the day.
+
+ - `events`, a `text` field, a rough description of the day's weather, if anything of interest occurred.
+
+ - `windDirection`, an `integer` field, degrees from north.
+
+All units (when I try it) are Imperial, temperatures in degrees Fahrenheit, distances in miles, speeds in miles per hour, heights in inches, pressures in inches of mercury.  That works out fine for me.  Anybody else should hope that different airport codes trigger different units or live with it and convert.
+
 As mentioned, there are two other tables.
 
 The use of the *Pause Recording* feature is recorded in the **`pauses`** table, with the following fields.  Again, all date strings are in `%Y-%m-%dT%T` format unless configured to do something different in the graphical options interface.
@@ -245,11 +304,11 @@ The Future
 
 Some possible options that may eventually be in the works come largely from scripts I already use to monitor certain activity.
 
- - [X] User-defined start/stop states.
+ - [X] User-defined start/stop states.  _(Configurable in `.uManage`)_
 
  - [ ] Trigger actions when state changes, for example opening a web page or start an application after a long time idle or paused.
 
- - [ ] Download and log/insert supplemental data such as weather.
+ - [X] Download and log/insert supplemental data such as weather.  _(Uses quasi-CSV data from [Weather Underground](http://wunderground.com/))_
 
  - [ ] Create installable package.
 
@@ -257,5 +316,5 @@ Some possible options that may eventually be in the works come largely from scri
 
  - [ ] Allow filing notes from indicator menu.  (Possible with GTK+?)
 
- - [ ] Report on log entries.  (Separate application?)
+ - [X] Report on log entries.  (Separate application?)  _(Project begun in [R](http://www.r-project.org/) on [GitHub](https://github.com/jcolag/uManage-reports))
 
