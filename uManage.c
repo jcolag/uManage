@@ -1,6 +1,4 @@
-#ifdef GUI             /* GTK+ runs its own message loop */
 #include <pthread.h>
-#endif
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,11 +12,16 @@
 #include "indicate.h"
 #include "sqlite.h"
 #include "mouse.h"
+#include "weather.h"
 
+pthread_t               thr_wx;
 struct window_state     current;
 struct program_options  opts;
 FILE                   *report;
-int                     poll_continue = 1;
+int                     poll_continue = 1,
+                        thr_wx_running = 0;
+
+void *get_weather_data(void *);
 
 int main (int argc, char *argv[]) {
 #ifdef GUI
@@ -114,6 +117,7 @@ void handle_alarm (int sig) {
      *     Log status if interesting
      *     Set for next iteration
      */
+    void               *status;
     unsigned long       idle;               /* Idle time in ms */
     time_t              idle_dur;
 #ifdef GUI
@@ -135,6 +139,18 @@ void handle_alarm (int sig) {
     }
 
     idle = idle_time();
+
+    if (thr_wx_running < 0) {
+        pthread_join(thr_wx, &status);
+        thr_wx_running = 0;
+    }
+    time(&idle_dur);
+    if(thr_wx_running == 0 &&
+            opts.use_database &&
+            idle_dur - current.weather_since > 60 * 60 * 10) {
+        time(&current.weather_since);
+        pthread_create(&thr_wx, NULL, get_weather_data, 0);
+    }
 
     if(idle < current.last_idle) {
         /* New idle "session" */
@@ -236,6 +252,39 @@ void window_state_init (struct window_state *state) {
     state->idle_accumulated = 0;
     time(&state->window_start);
     strcpy((char *)state->window_title, "");
+}
+
+void *get_weather_data(void *arg) {
+    int         year, month, rows;
+    char        csv[128];
+    time_t      now;
+    struct tm  *ti;
+
+    if (arg != NULL) {
+        /* Just use the parameter for something... */
+    }
+    thr_wx_running = 1;
+    time(&now);
+    ti = localtime(&now);
+    year = ti->tm_year + 1900;
+    month = ti->tm_mon;
+    if (month == 0) {
+        month = 12;
+    }
+
+    rows = queryRowsForMonth("weather", year, month);
+    if (rows > 0) {
+        thr_wx_running = -2;
+        return NULL;
+    }
+
+    rows = getWxMonth(year, month, opts.airport);
+    while (wxLinesRemaining()) {
+        nextWxLine(csv);
+        write_weather_to_database(csv);
+    }
+    thr_wx_running = -1;
+    return NULL;
 }
 
 void get_executable_path (char *path, size_t length) {

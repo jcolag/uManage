@@ -10,6 +10,7 @@ struct window_state {
                     idle_start,         /* Idle started at (s) */
                     idle_accumulated,   /* Idle with window focus (s) */
                     last_jiggle,        /* Start of the last mouse move */
+                    weather_since,
                     jiggle_since,
                     pause_since;
     char            csv[1024];          /* For reporting - output only */
