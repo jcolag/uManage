@@ -14,13 +14,14 @@ int open_database(char *name) {
          *keepalives = "CREATE TABLE IF NOT EXISTS keepalives (start TEXT, end TEXT);",
          *weather = "CREATE TABLE IF NOT EXISTS weather (date TEXT, maxTemp INTEGER, meanTemp INTEGER, minTemp INTEGER, maxDew INTEGER, meanDew INTEGER, minDew INTEGER, maxHumid INTEGER, meanHumid INTEGER, minHumid INTEGER, maxPressure REAL, meanPressure REAL, minPressure REAL, maxVisibility INTEGER, meanVisibility INTEGER, minVisibility INTEGER, maxWind INTEGER, meanWind INTEGER, maxGust INTEGER, precipitation REAL, clouds INTEGER, events TEXT, windDirection INTEGER);",
          *error;
-    int status = 0;
+    int status = 0,
+        sqlflags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX;
 
     /* Stash the database name in case we need to re-open */
     strcpy(database_name, name);
 
     /* Open the file and make sure the table exists */
-    status = sqlite3_open(database_name, &sql);
+    status = sqlite3_open_v2(database_name, &sql, sqlflags, NULL);
     if (status) {
         return status;
     }
