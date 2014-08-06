@@ -32,7 +32,7 @@ The options are:
 
  - `-a`/`--airport` _`code`_:  The [ICAO](https://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_K) airport code from which to pull weather data.
 
- - `-b`/`--database` _`database`_:  Name of an SQLite3 database file, which _uManage_ will create, if it doesn't already exist.  __Note__ that _uManage_ will automatically set the _time format_ (see `-t`, below) to `%Y-%m-%dT%T` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601), which is required for SQLite's date and time functions) and block attempts to change the format.  Items in the CSV will also be quoted (including the entire date, regardless of format) for compatability with the database.
+ - `-b`/`--database` _`database`_:  Name of an SQLite3 database file, which _uManage_ will create, if it doesn't already exist.  __Note__ that _uManage_ will automatically set the _time format_ (see `-t`, below) to `%Y-%m-%dT%T` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601), which is required for SQLite's date and time functions) and block attempts to change the format.  Items in the CSV will also be quoted (including the entire date, regardless of format) for compatibility with the database.
 
  - `-d`/`--delay` _`delay`_:  Delay (in seconds) between looks at the current window.  The default and minimum are both one second (1s).
 
