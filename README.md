@@ -126,6 +126,14 @@ Notice that the items may be any string (that doesn't have an equal sign in it),
 
 Failing to terminate with the equal sign causes the Glib key-file parser some sort of indigestive problem.  At best, it skips the name.  At worst, it may crash.  A this time, no value is read for the key, though future expansion may provide a use.
 
+The menu items can also be configured (though its operation strikes me a suspicious at the moment) through the options screen.  The _User-Defined Pauses_ field of the _Preferences_ window is a straightforwardly comma-delimited.  So, the above example would appear as:
+
+    Wash Up,Exercise,Eat,Commute,Work,Watch Television,Go Out
+
+Currently, the "parsing" code is extremely literal-minded.  If there are any extra spaces or commas in this listing, they will appear in the configuration file as extra spacing and empty menu items.
+
+Please also note that changes here will __not__ be reflected in the menu until _uManageUi_ is restarted.
+
 For the moment, all such activities are logged to the `pauses` table, even though they don't pause operations.
 
 Output
