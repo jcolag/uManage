@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include "config.h"
@@ -10,12 +11,16 @@ int     poll_state = 0,
         dist_state = 0,
         file_state = 0,
         db_state = 0,
-        tfmt_state = 0;
+        tfmt_state = 0,
+        userdef_state = 0;
 
 struct program_options  newest,
                        *oldest;
 
 void open_uoptions(char *path, struct program_options *orig) {
+    char    items[2048];
+    int     count;
+
     load_uoptions_from_file(path, 1);
     if (orig != NULL) {
         oldest = orig;
@@ -49,6 +54,17 @@ void open_uoptions(char *path, struct program_options *orig) {
         }
         if (strcmp(oldest->dbname, "")) {
             gtk_entry_set_text(uoptions_Db_Input, oldest->dbname);
+        }
+        if (oldest->menu_len > 0) {
+            items[0] = '\000';
+            for (count = 0; count < oldest->menu_len; count++) {
+                strcat(items, oldest->menu_items[count]);
+                if (count + 1 < oldest->menu_len) {
+                    strcat(items, ",");
+                }
+            }
+            gtk_entry_set_text(uoptions_UserDef_Input, items);
+            gtk_switch_set_active(uoptions_UserDef_Switch, 1);
         }
     }
     gtk_widget_show_all((GtkWidget*)GTK_WINDOW(uoptions_uManage_Options));
@@ -132,6 +148,17 @@ void on_TFmt_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) 
     tfmt_state = onSw;
 }
 
+void on_UserDef_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data) {
+    gboolean onSw;
+    if (button == NULL && user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    onSw = gtk_switch_get_active(button);
+    gtk_widget_set_sensitive ((GtkWidget *)uoptions_UserDef_Input, onSw);
+    userdef_state = onSw;
+}
+
 void on_Poll_Input_value_changed (GtkSpinButton *spinbutton, gpointer user_data) {
     if (user_data == NULL) {
         /* Bogus condition to use parameters */
@@ -188,6 +215,33 @@ void on_TFmt_Input_changed (GtkEntry *entry, gpointer user_data) {
     strcpy(newest.time_format, gtk_entry_get_text(entry));
 }
 
+void on_UserDef_Input_changed (GtkEntry *entry, gpointer user_data) {
+    char   *start,
+            copy[2048];
+    int     commas = 0;
+
+    if (user_data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+    strcpy(copy, gtk_entry_get_text(entry));
+    start = strtok(copy, ",");
+    if (newest.menu_items != NULL) {
+        newest.menu_items = NULL;
+    }
+    while (start) {
+        ++commas;
+        newest.menu_items = realloc(newest.menu_items, sizeof(char*) * commas);
+        if (newest.menu_items == NULL) {
+            break;
+        }
+        newest.menu_items[commas - 1] = malloc(sizeof(char) * strlen(start) + 1);
+        strcpy(newest.menu_items[commas - 1], start);
+        start = strtok(NULL, ",");
+    }
+    newest.menu_len = commas;
+}
+
 void on_Save_Button_clicked (GtkButton *button, gpointer user_data) {
     if (button == NULL && user_data == NULL) {
         /* Bogus condition to use parameters */
@@ -213,6 +267,10 @@ void on_Save_Button_clicked (GtkButton *button, gpointer user_data) {
     }
     if (tfmt_state) {
         strcpy(oldest->time_format, newest.time_format);
+    }
+    if (userdef_state) {
+        oldest->menu_len = newest.menu_len;
+        oldest->menu_items = newest.menu_items;
     }
     save_configuration(oldest);
 }

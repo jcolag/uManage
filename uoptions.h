@@ -14,4 +14,5 @@ void on_File_Input_changed (GtkEntry *entry, gpointer user_data);
 void on_Db_Input_changed (GtkEntry *entry, gpointer user_data);
 void on_TFmt_Input_changed (GtkEntry *entry, gpointer user_data);
 void on_Save_Button_clicked (GtkButton *button, gpointer user_data);
-
+void on_UserDef_Switch_state_flags_changed (GtkSwitch *button, gpointer user_data);
+void on_UserDef_Input_changed (GtkEntry *entry, gpointer user_data);
