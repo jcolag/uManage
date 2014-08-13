@@ -27,6 +27,11 @@
     <property name="can_focus">False</property>
     <property name="icon_name">application-exit</property>
   </object>
+  <object class="GtkImage" id="Image_Refresh">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">gtk-refresh</property>
+  </object>
   <object class="GtkMenu" id="Indicator_Menu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -48,6 +53,16 @@
         <property name="use_underline">True</property>
         <property name="tooltip_text" translatable="yes">Configure uManage and update program options.</property>
         <property name="image">Image_Config</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="Menu_Refresh">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">_Refresh Menu</property>
+        <property name="use_underline">True</property>
+        <property name="tooltip_text" translatable="yes">Refresh user-defined portion of this indicator menu.</property>
+        <property name="image">Image_Refresh</property>
       </object>
     </child>
     <child>

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
@@ -10,9 +11,12 @@
 struct program_options *progopts = NULL;
 char pathname[256];
 int *force;
+static const int user_loc = 6;
+static GtkWidget **user_menu_items;
 
 void activate_about (GtkMenuItem *, gpointer);
 void activate_options (GtkMenuItem *, gpointer);
+void activate_refresh (GtkMenuItem *, gpointer);
 void activate_pause (GtkCheckMenuItem *, gpointer);
 void activate_jiggle (GtkCheckMenuItem *, gpointer);
 void activate_quit (GtkMenuItem *, gpointer);
@@ -32,6 +36,20 @@ void activate_options (GtkMenuItem *menu, gpointer data) {
         ;
     }
     open_uoptions(pathname, progopts);
+}
+
+void activate_refresh (GtkMenuItem *menu, gpointer data) {
+    struct program_options  options;
+
+    if (menu == NULL && data == NULL) {
+        /* Bogus condition to use parameters */
+        ;
+    }
+/*    remove_menu_items();*/
+    get_configuration(&options);
+    if (options.menu_items != NULL) {
+        add_menu_items(options.menu_items);
+    }
 }
 
 void activate_pause (GtkCheckMenuItem *menu, gpointer data) {
@@ -121,6 +139,7 @@ void *run_indicator(void *arg) {
     gtk_widget_show_all((GtkWidget*)umenu_Indicator_Menu);
     g_signal_connect(umenu_Menu_Quit, "activate", G_CALLBACK(activate_quit), NULL);
     g_signal_connect(umenu_Menu_Opts, "activate", G_CALLBACK(activate_options), NULL);
+    g_signal_connect(umenu_Menu_Refresh, "activate", G_CALLBACK(activate_refresh), NULL);
     g_signal_connect(umenu_Menu_About, "activate", G_CALLBACK(activate_about), NULL);
     g_signal_connect(umenu_Menu_Pause, "toggled", G_CALLBACK(activate_pause), NULL);
     g_signal_connect(umenu_Menu_Jiggle, "toggled", G_CALLBACK(activate_jiggle), NULL);
@@ -131,18 +150,49 @@ void *run_indicator(void *arg) {
 
 int add_menu_items(char **items) {
     int         idx,
-                loc = 6;
+                count = 0,
+                loc = 7;
     GtkWidget  *item;
 
     for (idx = 0; items[idx] != NULL; idx++) {
+        ++count;
+    }
+    user_menu_items = malloc(sizeof(GtkWidget*) * (count + 2));
+    user_menu_items[count + 1] = NULL;
+    for (idx = 0; idx < count; idx++) {
         item = gtk_check_menu_item_new_with_label(items[idx]);
+        user_menu_items[idx] = item;
         g_signal_connect(item, "activate", G_CALLBACK(activate_user), NULL);
         gtk_menu_shell_insert((GtkMenuShell *)umenu_Indicator_Menu, item, loc);
         ++loc;
     }
     if (idx > 0) {
         item = gtk_separator_menu_item_new();
+        g_object_ref((GObject*)item);
         gtk_menu_shell_insert((GtkMenuShell *)umenu_Indicator_Menu, item, loc);
+        user_menu_items[count] = item;
+        g_object_unref((GObject*)item);
     }
     return idx;
 }
+
+int remove_menu_items(void) {
+    int         idx;
+    GtkWidget  *item;
+
+    if (user_menu_items == NULL) {
+        return 0;
+    }
+    for (idx = 0; user_menu_items[idx] != NULL; idx++) {
+        item = user_menu_items[idx];
+        g_object_ref((GObject*)item);
+        gtk_container_remove((GtkContainer*)umenu_Indicator_Menu, item);
+/*        gtk_widget_destroy((GtkWidget*)item);*/
+        g_object_unref((GObject*)item);
+        user_menu_items[idx] = NULL;
+    }
+    free(user_menu_items);
+    user_menu_items = NULL;
+    return idx;
+}
+
