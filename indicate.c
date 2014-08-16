@@ -14,6 +14,7 @@ int *force;
 static const int user_loc = 6;
 static GtkWidget **user_menu_items;
 
+void build_menu(AppIndicator *);
 void activate_about (GtkMenuItem *, gpointer);
 void activate_options (GtkMenuItem *, gpointer);
 void activate_refresh (GtkMenuItem *, gpointer);
@@ -135,6 +136,13 @@ void *run_indicator(void *arg) {
     app_indicator_set_status(indicator, APP_INDICATOR_STATUS_ACTIVE);
     app_indicator_set_attention_icon(indicator, "indicator-messages-new");
 
+    build_menu(indicator);
+
+    gtk_main ();
+    return arg;
+}
+
+void build_menu(AppIndicator *indicator) {
     app_indicator_set_menu(indicator, GTK_MENU(umenu_Indicator_Menu));
     gtk_widget_show_all((GtkWidget*)umenu_Indicator_Menu);
     g_signal_connect(umenu_Menu_Quit, "activate", G_CALLBACK(activate_quit), NULL);
@@ -143,9 +151,6 @@ void *run_indicator(void *arg) {
     g_signal_connect(umenu_Menu_About, "activate", G_CALLBACK(activate_about), NULL);
     g_signal_connect(umenu_Menu_Pause, "toggled", G_CALLBACK(activate_pause), NULL);
     g_signal_connect(umenu_Menu_Jiggle, "toggled", G_CALLBACK(activate_jiggle), NULL);
-
-    gtk_main ();
-    return arg;
 }
 
 int add_menu_items(char **items) {
