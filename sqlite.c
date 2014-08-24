@@ -72,19 +72,19 @@ int write_activity_to_database(char *insert, int cycle) {
     return write_to_database("activity", insert, cycle);
 }
 
-int write_keepalive_to_database(char *insert) {
-    return write_to_database("keepalives", insert, 0);
+int write_keepalive_to_database(char *insert, int cycle) {
+    return write_to_database("keepalives", insert, cycle);
 }
 
-int write_duration_to_database(char *insert, char *reason) {
+int write_duration_to_database(char *insert, char *reason, int cycle) {
     char csv[512];
 
     sprintf(csv, "%s,'%s'", insert, reason);
-    return write_to_database("pauses", csv, 0);
+    return write_to_database("pauses", csv, cycle);
 }
 
-int write_weather_to_database(char *insert) {
-    return write_to_database("weather", insert, 0);
+int write_weather_to_database(char *insert, int cycle) {
+    return write_to_database("weather", insert, cycle);
 }
 
 
