@@ -1,7 +1,7 @@
 uManage
 =======
 
-_uManage_ is a time-monitoring application to operate under the X Window System.
+_uManage_ is a time-monitoring application to operate under the X Window System.  If you're looking for something similar to Windows, I managed to turn up my prototype for this idea [Track Time](https://github.com/jcolag/TrackTime), which might be of interest.
 
 Maybe I didn't look hard enough, but every time I try to monitor my computer usage, the best the software seems to be able to do is _ask me_ every few minutes.  The problems with this are many, but the biggies:
 
