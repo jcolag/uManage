@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sqlite3.h>
+#include <unistd.h>
 #include "sqlite.h"
 
 int write_to_database(char *table, char *, int);
@@ -53,13 +54,17 @@ int write_to_database(char *table, char *insert, int cycle) {
      */
     if (cycle && sql == NULL) {
         open_database(database_name);
+        sleep(1);
     }
     if (sql == NULL) {
         return -1;
     }
+    status = sqlite3_exec(sql, "BEGIN IMMEDIATE;", NULL, NULL, &error);
     sprintf(query, "INSERT INTO %s VALUES (%s);", table, insert);
     status = sqlite3_exec(sql, query, NULL, NULL, &error);
+    status = sqlite3_exec(sql, "COMMIT;", NULL, NULL, &error);
     if (status) {
+        close_database();
         return -1;
     }
     if (cycle) {
@@ -109,9 +114,14 @@ int queryRowsForMonth(char *table, int year, int month) {
 }
 
 void close_database(void) {
+    int status = -1;
+
     if (sql == NULL) {
         return;
     }
-    sqlite3_close(sql);
+    while (status != 0) {
+        status = sqlite3_close_v2(sql);
+        sleep(1);
+    }
     sql = NULL;
 }
