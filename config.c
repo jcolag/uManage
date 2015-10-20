@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 #include <xdo.h>
 #include <sys/types.h>
@@ -29,6 +30,7 @@ int get_configuration (struct program_options *opts) {
     opts->idle_threshold = 180;
     opts->save_options = 0;
     opts->text_out = 1;
+    opts->cycle_db = 0;
 
     /* Preserve non-settings if we mess with anything */
     keyfile = g_key_file_new ();
@@ -66,6 +68,10 @@ int get_configuration (struct program_options *opts) {
         opts->use_database = 1;
         strcpy(opts->time_format, "%Y-%m-%dT%T");
         strcpy(opts->dbname, t_str);
+    }
+    t_str = g_key_file_get_string(keyfile, "File", "cycledb", NULL);
+    if (t_str != NULL && !strcasecmp(t_str, "false")) {
+        opts->cycle_db = 0;
     }
     t_str = g_key_file_get_string(keyfile, "User", "airport", NULL);
     if (t_str != NULL) {

@@ -12,6 +12,7 @@ struct program_options {
                     pause,              /* Don't record */
                     jiggle,             /* Move mouse */
                     weather,            /* Download? */
+                    cycle_db,           /* Close database after writes? */
                     menu_len,           /* Number of custom menu items */
                    *userdef;            /* Menu items active */
     char            filename[256],

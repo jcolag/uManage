@@ -180,7 +180,7 @@ void handle_alarm (int sig) {
             opts.userdef[idx] = -opts.userdef[idx];
             report_duration(current.csv, opts.time_format, (time_t *)&opts.userdef[idx], &idle_dur);
             if (opts.use_database) {
-                write_duration_to_database(current.csv, opts.menu_items[idx], 0);
+                write_duration_to_database(current.csv, opts.menu_items[idx], opts.cycle_db);
             }
             opts.userdef[idx] = 0;
         }
@@ -206,7 +206,7 @@ void handle_alarm (int sig) {
         report_duration(current.csv, opts.time_format, &current.jiggle_since, &idle_dur);
         current.jiggle_since = 0;
         if (opts.use_database) {
-            write_keepalive_to_database(current.csv, 0);
+            write_keepalive_to_database(current.csv, opts.cycle_db);
         }
     }
 
@@ -216,14 +216,14 @@ void handle_alarm (int sig) {
         report_duration(current.csv, opts.time_format, &current.pause_since, &idle_dur);
         current.pause_since = 0;
         if (opts.use_database) {
-            write_duration_to_database(current.csv, "Pause", 0);
+            write_duration_to_database(current.csv, "Pause", opts.cycle_db);
         }
     }
 #endif
 
     if(is_window_updated(&current, &poll_continue, opts.use_database)) {
         if (opts.use_database) {
-            write_activity_to_database(current.csv, 0);
+            write_activity_to_database(current.csv, opts.cycle_db);
         }
         if (opts.text_out) {
             /* Flush in case someone monitors the output file */
@@ -281,7 +281,7 @@ void *get_weather_data(void *arg) {
     rows = getWxMonth(year, month, opts.airport);
     while (wxLinesRemaining()) {
         nextWxLine(csv);
-        write_weather_to_database(csv, 0);
+        write_weather_to_database(csv, opts.cycle_db);
     }
     thr_wx_running = -1;
     return NULL;
