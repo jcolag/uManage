@@ -303,7 +303,7 @@ The graphical interface is handled with [GTK+](https://developer.gnome.org/gtk3/
 
 The application menu also uses the [Application Indicator](https://wiki.ubuntu.com/DesktopExperienceTeam/ApplicationIndicators) library.
 
-    sudo apt-get install appindicator-dev
+    sudo apt-get install libappindicator-dev
 
 More to come as the application advances, but this should be a good start.
 
